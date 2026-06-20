@@ -1,3 +1,15 @@
+/**
+ * Orquestador del proceso ETL (Extract, Transform, Load).
+ *
+ * Flujo:
+ *   1. Crea los esquemas raw, clean y gold (01_init_schemas.sql)
+ *   2. Crea las tablas raw e importa los CSVs de Olist (02_create_raw_tables.sql + csv-parse)
+ *   3. Transforma raw -> clean con tipado correcto (03_raw_to_clean.sql)
+ *   4. Construye el esquema estrella gold con fact_sales y dimensiones (04_clean_to_gold.sql)
+ *
+ * Se ejecuta de forma autónoma al arrancar el contenedor via `npm run etl`.
+ */
+
 import { PrismaClient } from '@prisma/client';
 import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
