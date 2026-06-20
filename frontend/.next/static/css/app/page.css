@@ -1,0 +1,382 @@
+/*!*****************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[3]!./src/components/ui/Card.module.css ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************/
+.Card_card__7jt2e {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  transition: box-shadow var(--transition-base), border-color var(--transition-base);
+}
+
+.Card_cardElevated__w8g7B {
+  box-shadow: var(--shadow-md);
+}
+
+.Card_header__Yl15_ {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.Card_title__g69HW {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/*!*******************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[3]!./src/components/ui/Select.module.css ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************************/
+.Select_wrapper__HS8Ar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.Select_label__pFerf {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.Select_selectContainer__8fjJg {
+  position: relative;
+}
+
+.Select_select___FHyr {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  padding-right: var(--spacing-2xl);
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  outline: none;
+}
+
+.Select_select___FHyr:hover {
+  border-color: var(--color-border-hover);
+}
+
+.Select_select___FHyr:focus {
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+}
+
+.Select_selectError__gsYg3 {
+  border-color: var(--color-error);
+}
+
+.Select_selectError__gsYg3:focus {
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+
+.Select_arrow__Oz_m9 {
+  position: absolute;
+  right: var(--spacing-md);
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.Select_errorText__8WyLN {
+  font-size: var(--font-size-xs);
+  color: var(--color-error);
+}
+
+/*!******************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[3]!./src/components/ui/Table.module.css ***!
+  \******************************************************************************************************************************************************************************************************************************************************************************/
+.Table_tableWrapper__7D9hh {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.Table_table__rzXVj {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.Table_headerRow__cEDZn {
+  background-color: var(--color-bg-tertiary);
+}
+
+.Table_headerCell__WE1aT {
+  padding: var(--spacing-sm) var(--spacing-md);
+  text-align: left;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+
+.Table_headerCellSortable__tgVRF {
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.Table_headerCellSortable__tgVRF:hover {
+  color: var(--color-primary-400);
+}
+
+.Table_sortIcon__WQIFG {
+  margin-left: var(--spacing-xs);
+  display: inline-block;
+  color: var(--color-text-muted);
+}
+
+.Table_sortIconActive__HDPJy {
+  color: var(--color-primary-500);
+}
+
+.Table_bodyRow__ujSm8 {
+  transition: background-color var(--transition-fast);
+}
+
+.Table_bodyRow__ujSm8:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.Table_bodyRow__ujSm8:hover {
+  background-color: var(--color-bg-elevated);
+}
+
+.Table_bodyCell__iOAOG {
+  padding: var(--spacing-sm) var(--spacing-md);
+  color: var(--color-text-primary);
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.Table_bodyRow__ujSm8:last-child .Table_bodyCell__iOAOG {
+  border-bottom: none;
+}
+
+.Table_emptyState__KthNf {
+  padding: var(--spacing-2xl);
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+/*!***********************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[3]!./src/components/ui/DatePicker.module.css ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************************/
+.DatePicker_wrapper__T0uc9 {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.DatePicker_label__HII8b {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.DatePicker_input__Bp39o {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-family-base);
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.DatePicker_input__Bp39o:hover {
+  border-color: var(--color-border-hover);
+}
+
+.DatePicker_input__Bp39o:focus {
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+}
+
+.DatePicker_input__Bp39o::-webkit-calendar-picker-indicator {
+  filter: invert(0.7);
+  cursor: pointer;
+}
+
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[3]!./src/components/dashboard/GlobalFilters.module.css ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************/
+.GlobalFilters_bar__eGR8x {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+.GlobalFilters_filterItem__4GEZQ {
+  min-width: 160px;
+  flex: 1 1;
+}
+
+.GlobalFilters_resetButton__JEcfG {
+  height: 38px;
+  padding: 0 var(--spacing-lg);
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+  white-space: nowrap;
+  align-self: flex-end;
+}
+
+.GlobalFilters_resetButton__JEcfG:hover {
+  border-color: var(--color-border-hover);
+  color: var(--color-text-primary);
+}
+
+/*!***************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[3]!./src/components/dashboard/KpiGrid.module.css ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************/
+.KpiGrid_grid__c7i2u {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-gap: var(--spacing-md);
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+}
+
+.KpiGrid_kpiValue__DfMOd {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  line-height: 1.2;
+}
+
+.KpiGrid_kpiSubtext__0VDWv {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  margin-top: var(--spacing-xs);
+}
+
+.KpiGrid_kpiPositive__9ZYbJ {
+  color: var(--color-secondary-400);
+}
+
+.KpiGrid_kpiNegative__Th9O1 {
+  color: var(--color-error);
+}
+
+.KpiGrid_kpiNeutral__Is8Sj {
+  color: var(--color-primary-400);
+}
+
+/*!******************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[3]!./src/components/dashboard/TrendChart.module.css ***!
+  \******************************************************************************************************************************************************************************************************************************************************************************************/
+.TrendChart_wrapper__GvuEv {
+  position: relative;
+}
+
+.TrendChart_chartContainer__YIft8 {
+  width: 100%;
+  overflow: hidden;
+}
+
+.TrendChart_svg__6eghY {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.TrendChart_legend__pW1JG {
+  display: flex;
+  gap: var(--spacing-lg);
+  justify-content: center;
+  margin-top: var(--spacing-md);
+}
+
+.TrendChart_legendItem__g2YqQ {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.TrendChart_legendDot__Wr0GP {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+}
+
+.TrendChart_emptyChart__RrdGk {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+/*!***********************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[3]!./src/app/overview.module.css ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************/
+.overview_page__PaZg4 {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-lg);
+}
+
+.overview_header__Aoni4 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-xl);
+}
+
+.overview_title__eDqJK {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.overview_subtitle__7zVmE {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-top: var(--spacing-xs);
+}
+

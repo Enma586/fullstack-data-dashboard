@@ -2,7 +2,7 @@
 # Dockerfile — Construcción multi-stage del frontend Olist Dashboard (Next.js)
 #
 # Stage 1 (deps):
-#   - Instala dependencias con npm ci
+#   - Instala dependencias con npm install
 # Stage 2 (builder):
 #   - Construye la aplicación Next.js (next build)
 # Stage 3 (runner):
@@ -16,15 +16,16 @@ FROM node:20-alpine AS deps
 
 WORKDIR /app
 
-COPY package.json package-lock.json* ./
-RUN npm ci
+COPY package.json ./
+RUN npm install
 
 FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-COPY package.json package-lock.json* ./
+COPY package.json ./
 COPY --from=deps /app/node_modules ./node_modules
+COPY public/ ./public/
 COPY src/ ./src/
 COPY next.config.mjs tsconfig.json ./
 

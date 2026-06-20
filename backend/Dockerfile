@@ -18,7 +18,7 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-COPY package.json tsconfig.json ./
+COPY package.json package-lock.json tsconfig.json ./
 COPY prisma/ ./prisma/
 
 RUN npm ci

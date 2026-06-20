@@ -19,7 +19,7 @@ interface TableProps<T> {
   className?: string;
 }
 
-export function Table<T extends Record<string, unknown>>({
+export function Table<T>({
   columns,
   data,
   sortKey,
@@ -83,7 +83,7 @@ export function Table<T extends Record<string, unknown>>({
                     className={styles.bodyCell}
                     style={{ textAlign: col.align ?? "left" }}
                   >
-                    {col.render ? col.render(row, rowIndex) : String(row[col.key] ?? "")}
+                    {col.render ? col.render(row, rowIndex) : String((row as Record<string, unknown>)[col.key] ?? "")}
                   </td>
                 ))}
               </tr>
