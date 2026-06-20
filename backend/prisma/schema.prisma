@@ -3,6 +3,7 @@
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["multiSchema"]
+  binaryTargets   = ["native", "debian-openssl-3.0.x"]
 }
 
 // # Fuente de datos: PostgreSQL. Las tablas se definen bajo el esquema `gold`.

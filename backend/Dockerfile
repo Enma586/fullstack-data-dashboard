@@ -14,7 +14,7 @@
 #   - Comando por defecto: node dist/server.js
 # =============================================================================
 
-FROM node:20-alpine AS builder
+FROM node:20-slim AS builder
 
 WORKDIR /app
 
@@ -33,11 +33,11 @@ RUN cp -r src/infrastructure/etl/sql dist/infrastructure/etl/sql
 
 RUN npm prune --production
 
-FROM node:20-alpine AS runner
+FROM node:20-slim AS runner
 
 WORKDIR /app
 
-RUN apk add --no-cache bash postgresql-client
+RUN apt-get update -qq && apt-get install -y -qq --no-install-recommends postgresql-client && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
