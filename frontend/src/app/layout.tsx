@@ -1,3 +1,7 @@
+/**
+ * RootLayout — Layout raíz de la aplicación.
+ * Define metadatos globales, carga globals.css e inyecta Providers.
+ */
 import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "./providers";

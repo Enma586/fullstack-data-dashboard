@@ -1,4 +1,8 @@
-import styles from "./Select.module.css";
+/**
+ * Select — Selector desplegable controlado con label, placeholder y estado de error.
+ * Totalmente estilizado con CSS Modules sin librerías externas.
+ */
+import styles from "@/styles/ui/Select.module.css";
 
 interface SelectOption {
   value: string;

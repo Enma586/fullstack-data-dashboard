@@ -1,4 +1,8 @@
-import styles from "./overview.module.css";
+/**
+ * Loading — Skeleton de carga para la navegación inicial.
+ * Muestra placeholders animados mientras se cargan los datos del dashboard.
+ */
+import styles from "@/styles/app/overview.module.css";
 
 export default function Loading() {
   return (

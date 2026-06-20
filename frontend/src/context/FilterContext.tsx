@@ -1,8 +1,11 @@
+/**
+ * FilterContext — Estado global de filtros para el dashboard.
+ * Provee los valores actuales de fecha, estado, status de orden y categoría,
+ * junto con funciones setter y un objeto toQueryParams para consumir la API.
+ *
+ * Uso: envolver la aplicación con <FilterProvider> y acceder con useFilters().
+ */
 "use client";
-
-/* =============================================================================
-   context/FilterContext.tsx — Estado global de filtros para el dashboard
-   ============================================================================= */
 
 import {
   createContext,

@@ -1,3 +1,8 @@
+/**
+ * OverviewPage — Página principal del dashboard.
+ * Muestra filtros globales, tarjetas KPI, gráfico de tendencia y tabla
+ * Top 10 de productos con alternancia GMV / Revenue.
+ */
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
@@ -6,7 +11,7 @@ import { apiClient, ApiClientError } from "@/services/apiClient";
 import { GlobalFilters, KpiGrid, TrendChart } from "@/components/dashboard";
 import { Card, Table, type Column } from "@/components/ui";
 import type { KpiSummaryResponse, RevenueTrendResponse, ProductRankingEntry } from "@/types";
-import styles from "./overview.module.css";
+import styles from "@/styles/app/overview.module.css";
 
 type Metric = "gmv" | "revenue";
 

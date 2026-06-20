@@ -1,6 +1,12 @@
-/* =============================================================================
-   types/index.ts — Interfaces de TypeScript para la API de Olist Dashboard
-   ============================================================================= */
+/**
+ * types/index.ts — Interfaces de TypeScript para la API de Olist Dashboard.
+ * Define los contratos de datos entre el frontend y el backend:
+ * - FilterParams: parámetros de consulta HTTP
+ * - KpiSummaryResponse: respuesta de GET /kpis
+ * - RevenueTrendItem / RevenueTrendResponse: respuesta de GET /trend/revenue
+ * - ProductRankingItem / ProductRankingResponse: respuesta de GET /rankings/products
+ * - GlobalFilters: estado interno de los filtros en el contexto
+ */
 
 // ─── Filtros ────────────────────────────────────────────────────────────────
 

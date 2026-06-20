@@ -1,5 +1,9 @@
+/**
+ * Table — Componente de tabla genérico con soporte para ordenamiento, render personalizado
+ * y mensaje de estado vacío. Tipado mediante Column<T>.
+ */
 import type { ReactNode } from "react";
-import styles from "./Table.module.css";
+import styles from "@/styles/ui/Table.module.css";
 
 export interface Column<T> {
   key: string;

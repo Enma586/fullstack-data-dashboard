@@ -1,8 +1,13 @@
+/**
+ * GlobalFilters — Barra de filtros globales del dashboard.
+ * Permite filtrar por rango de fechas, estado del cliente, status de orden y categoría.
+ * Los cambios se reflejan en toda la aplicación a través de FilterContext.
+ */
 "use client";
 
 import { useFilters } from "@/context/FilterContext";
 import { DatePicker, Select } from "@/components/ui";
-import styles from "./GlobalFilters.module.css";
+import styles from "@/styles/dashboard/GlobalFilters.module.css";
 
 const STATE_OPTIONS = [
   { value: "AC", label: "Acre" },

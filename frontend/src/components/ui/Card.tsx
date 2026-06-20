@@ -1,5 +1,9 @@
+/**
+ * Card — Contenedor reutilizable con título opcional y variante elevada.
+ * Usa variables CSS del sistema de diseño para fondo, borde y sombra.
+ */
 import type { ReactNode } from "react";
-import styles from "./Card.module.css";
+import styles from "@/styles/ui/Card.module.css";
 
 interface CardProps {
   children: ReactNode;

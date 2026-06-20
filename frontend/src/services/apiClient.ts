@@ -1,6 +1,9 @@
-/* =============================================================================
-   services/apiClient.ts — Cliente HTTP para la API de Olist Dashboard
-   ============================================================================= */
+/**
+ * apiClient — Cliente HTTP tipado para la API REST del backend.
+ * Proporciona métodos para obtener KPIs, tendencias y rankings.
+ * Usa NEXT_PUBLIC_API_URL como base URL (default http://localhost:3000).
+ * Lanza ApiClientError con el mensaje del servidor en errores HTTP.
+ */
 
 import type {
   FilterParams,

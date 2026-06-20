@@ -1,9 +1,14 @@
+/**
+ * TrendChart — Gráfico de líneas SVG para Revenue y Pedidos en el tiempo.
+ * Renderizado 100% nativo sin librerías externas. Incluye tooltip interactivo
+ * con línea guía vertical y leyenda.
+ */
 "use client";
 
 import { useState, useMemo, useCallback, type MouseEvent } from "react";
 import { Card } from "@/components/ui";
 import type { RevenueTrendItem } from "@/types";
-import styles from "./TrendChart.module.css";
+import styles from "@/styles/dashboard/TrendChart.module.css";
 
 const CHART_WIDTH = 800;
 const CHART_HEIGHT = 320;

@@ -1,6 +1,11 @@
+/**
+ * KpiGrid — Cuadrícula de tarjetas con los 7 KPIs principales.
+ * Muestra GMV, Revenue, Pedidos, AOV, IPO, Cancelación y On-Time.
+ * Los datos provienen de KpiSummaryResponse del API /kpis.
+ */
 import { Card } from "@/components/ui";
 import type { KpiSummaryResponse } from "@/types";
-import styles from "./KpiGrid.module.css";
+import styles from "@/styles/dashboard/KpiGrid.module.css";
 
 interface KpiGridProps {
   data: KpiSummaryResponse;

@@ -1,4 +1,8 @@
-import styles from "./DatePicker.module.css";
+/**
+ * DatePicker — Campo de entrada de fecha nativo estilizado con el tema oscuro.
+ * Envuelve <input type="date"> con label y control de estado.
+ */
+import styles from "@/styles/ui/DatePicker.module.css";
 
 interface DatePickerProps {
   label: string;

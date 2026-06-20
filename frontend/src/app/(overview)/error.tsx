@@ -1,3 +1,7 @@
+/**
+ * Error — Página de error global del dashboard.
+ * Atrapa errores de renderizado y ofrece un botón para reintentar.
+ */
 "use client";
 
 import { useEffect } from "react";
