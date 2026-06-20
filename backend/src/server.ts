@@ -7,9 +7,11 @@ import { GetTopProducts } from './application/GetTopProducts';
 import { HealthController } from './adapters/http/controllers/HealthController';
 import { KpiController } from './adapters/http/controllers/KpiController';
 import { TrendController } from './adapters/http/controllers/TrendController';
+import { ProductsController } from './adapters/http/controllers/ProductsController';
 import { createHealthRouter } from './adapters/http/routes/health.routes';
 import { createKpiRouter } from './adapters/http/routes/kpi.routes';
 import { createTrendRouter } from './adapters/http/routes/trend.routes';
+import { createProductsRouter } from './adapters/http/routes/products.routes';
 
 /** Puerto del servidor HTTP. Se obtiene de la variable de entorno `PORT` o por defecto 3000. */
 const PORT = process.env.PORT ?? 3000;
@@ -23,10 +25,12 @@ const getTopProducts = new GetTopProducts(repository);
 const healthController = new HealthController();
 const kpiController = new KpiController(getKpis);
 const trendController = new TrendController(getRevenueTrend);
+const productsController = new ProductsController(getTopProducts);
 
 app.use(createHealthRouter(healthController));
 app.use(createKpiRouter(kpiController));
 app.use(createTrendRouter(trendController));
+app.use(createProductsRouter(productsController));
 
 app.use(errorHandler);
 
