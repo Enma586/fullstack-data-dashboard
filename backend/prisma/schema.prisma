@@ -1,33 +1,38 @@
+// # Cliente Prisma configurado con el previewFeature multiSchema para
+// # trabajar con esquemas personalizados de PostgreSQL.
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["multiSchema"]
 }
 
+// # Fuente de datos: PostgreSQL. Las tablas se definen bajo el esquema `gold`.
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
   schemas  = ["gold"]
 }
 
+// # Tabla de hechos del esquema estrella. Almacena las ventas con métricas
+// # financieras y referencias a las dimensiones asociadas.
 model FactSales {
-  fact_sk                       Int       @id @default(autoincrement())
-  order_id                      String
-  order_item_id                 Int
-  customer_sk                   Int?
-  product_sk                    Int?
-  seller_sk                     Int?
-  order_purchase_date           DateTime? @db.Date
-  order_status                  String?
-  price                         Decimal?  @db.Decimal(10, 2)
-  freight_value                 Decimal?  @db.Decimal(10, 2)
-  payment_value_allocated       Decimal?  @db.Decimal(10, 2)
-  payment_type                  String?
-  payment_installments          Int?
-  review_score                  Int?
-  order_purchase_timestamp      DateTime?
-  order_approved_at             DateTime?
-  order_delivered_customer_date DateTime?
-  order_estimated_delivery_date DateTime?
+  fact_sk                       Int       @id @default(autoincrement()) // # Identificador único de la fila de hechos.
+  order_id                      String    // # Identificador del pedido.
+  order_item_id                 Int       // # Número de ítem dentro del pedido.
+  customer_sk                   Int?      // # FK hacia dim_customer.
+  product_sk                    Int?      // # FK hacia dim_product.
+  seller_sk                     Int?      // # FK hacia dim_seller.
+  order_purchase_date           DateTime? @db.Date // # Fecha de compra (sin hora).
+  order_status                  String?   // # Estado del pedido (ej. delivered, canceled).
+  price                         Decimal?  @db.Decimal(10, 2) // # Precio del ítem.
+  freight_value                 Decimal?  @db.Decimal(10, 2) // # Valor del flete.
+  payment_value_allocated       Decimal?  @db.Decimal(10, 2) // # Monto del pago prorrateado a este ítem.
+  payment_type                  String?   // # Tipo de pago (credit_card, boleto, etc.).
+  payment_installments          Int?      // # Número de cuotas del pago.
+  review_score                  Int?      // # Puntaje de la reseña (1-5).
+  order_purchase_timestamp      DateTime? // # Marca temporal de la compra.
+  order_approved_at             DateTime? // # Marca temporal de aprobación del pago.
+  order_delivered_customer_date DateTime? // # Marca temporal de entrega al cliente.
+  order_estimated_delivery_date DateTime? // # Fecha estimada de entrega.
 
   customer DimCustomer? @relation(fields: [customer_sk], references: [customer_sk])
   product  DimProduct?  @relation(fields: [product_sk], references: [product_sk])
@@ -37,11 +42,12 @@ model FactSales {
   @@map("fact_sales")
 }
 
+// # Dimensión de clientes. Contiene datos demográficos del comprador.
 model DimCustomer {
-  customer_sk       Int         @id @default(autoincrement())
-  customer_id       String      @unique
-  customer_city     String?
-  customer_state    String?
+  customer_sk       Int         @id @default(autoincrement()) // # Identificador surrogate del cliente.
+  customer_id       String      @unique // # Identificador original del cliente en el sistema fuente.
+  customer_city     String?   // # Ciudad del cliente.
+  customer_state    String?   // # Estado/UF del cliente.
 
   sales FactSales[]
 
@@ -49,11 +55,12 @@ model DimCustomer {
   @@map("dim_customer")
 }
 
+// # Dimensión de productos. Incluye el nombre de la categoría en portugués e inglés.
 model DimProduct {
-  product_sk                  Int         @id @default(autoincrement())
-  product_id                  String      @unique
-  product_category_name       String?
-  product_category_name_english String?
+  product_sk                  Int         @id @default(autoincrement()) // # Identificador surrogate del producto.
+  product_id                  String      @unique // # Identificador original del producto.
+  product_category_name       String?   // # Nombre de la categoría en portugués.
+  product_category_name_english String? // # Nombre de la categoría traducido al inglés.
 
   sales FactSales[]
 
@@ -61,11 +68,12 @@ model DimProduct {
   @@map("dim_product")
 }
 
+// # Dimensión de vendedores. Contiene datos de ubicación del vendedor.
 model DimSeller {
-  seller_sk    Int         @id @default(autoincrement())
-  seller_id    String      @unique
-  seller_city  String?
-  seller_state String?
+  seller_sk    Int         @id @default(autoincrement()) // # Identificador surrogate del vendedor.
+  seller_id    String      @unique // # Identificador original del vendedor.
+  seller_city  String?   // # Ciudad del vendedor.
+  seller_state String?   // # Estado/UF del vendedor.
 
   sales FactSales[]
 
@@ -73,14 +81,15 @@ model DimSeller {
   @@map("dim_seller")
 }
 
+// # Dimensión de fechas. Permite agrupar por año, mes, semana, trimestre, etc.
 model DimDate {
-  date_sk    Int         @id @default(autoincrement())
-  full_date  DateTime    @unique @db.Date
-  year       Int?
-  month      Int?
-  day        Int?
-  week       Int?
-  quarter    Int?
+  date_sk    Int         @id @default(autoincrement()) // # Identificador surrogate de la fecha.
+  full_date  DateTime    @unique @db.Date // # Fecha completa (sin hora).
+  year       Int?    // # Año.
+  month      Int?    // # Mes (1-12).
+  day        Int?    // # Día del mes (1-31).
+  week       Int?    // # Semana del año (1-53).
+  quarter    Int?    // # Trimestre (1-4).
 
   @@schema("gold")
   @@map("dim_date")

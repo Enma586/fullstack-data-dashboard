@@ -5,6 +5,11 @@ import {
   TopProductFilters,
 } from '../../src/domain/ports/IKpiRepository';
 
+/**
+ * Repositorio mock que retorna un ranking de productos fijo.
+ * Implementa IKpiRepository y solo define getTopProducts;
+ * los demás métodos lanzan error.
+ */
 class MockProductRepository implements IKpiRepository {
   async getTopProducts(_filters: TopProductFilters): Promise<ProductRanking[]> {
     return [
@@ -32,6 +37,7 @@ describe('GetTopProducts', () => {
     useCase = new GetTopProducts(repository);
   });
 
+  /** Debe retornar un arreglo con 3 productos ordenados por revenue */
   it('debe retornar un ranking de productos ordenado por revenue', async () => {
     const result = await useCase.execute({});
 
@@ -44,6 +50,7 @@ describe('GetTopProducts', () => {
     expect(result[0].revenue).toBe(75000);
   });
 
+  /** Sin limit explícito debe pasar un objeto vacío al repositorio */
   it('debe pasar el limit por defecto cuando no se especifica', async () => {
     const spy = jest.spyOn(repository, 'getTopProducts');
 
@@ -52,6 +59,7 @@ describe('GetTopProducts', () => {
     expect(spy).toHaveBeenCalledWith({});
   });
 
+  /** Los filtros con limit personalizado deben propagarse al repositorio */
   it('debe pasar el limit personalizado al repositorio', async () => {
     const spy = jest.spyOn(repository, 'getTopProducts');
 

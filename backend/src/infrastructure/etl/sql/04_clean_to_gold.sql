@@ -1,14 +1,17 @@
 -- =============================================================================
--- Transformacion clean -> gold (Esquema Estrella)
+-- Transformación clean -> gold (Modelo Estrella)
 -- =============================================================================
--- NOTA: El pago en Olist se realiza a nivel de orden (order_payments),
---       pero el grano de fact_sales es 1 fila por item de orden (order_items).
+-- Propósito: Poblar las tablas de dimensiones y la tabla de hechos
+--            (fact_sales) en el esquema gold a partir de los datos limpios.
+--
+-- NOTA: El pago en Olist se registra a nivel de orden (order_payments),
+--       pero el grano de fact_sales es una fila por ítem de orden (order_items).
 --       Para evitar duplicar el pago total en cada fila, se asigna
---       proporcionalmente segun el peso del precio del item sobre el total
+--       proporcionalmente según el peso del precio del ítem sobre el total
 --       de la orden (payment_value_allocated).
 -- =============================================================================
 
--- 1. Dimension de clientes
+-- 1. Dimensión: dim_customer (clientes)
 TRUNCATE TABLE gold.dim_customer CASCADE;
 INSERT INTO gold.dim_customer (customer_id, customer_city, customer_state)
 SELECT DISTINCT
@@ -17,7 +20,7 @@ SELECT DISTINCT
     c.customer_state
 FROM clean.customers c;
 
--- 2. Dimension de productos
+-- 2. Dimensión: dim_product (productos con traducción de categoría)
 TRUNCATE TABLE gold.dim_product CASCADE;
 INSERT INTO gold.dim_product (product_id, product_category_name, product_category_name_english)
 SELECT DISTINCT
@@ -28,7 +31,7 @@ FROM clean.products p
 LEFT JOIN clean.product_category_name_translation t
     ON p.product_category_name = t.product_category_name;
 
--- 3. Dimension de vendedores
+-- 3. Dimensión: dim_seller (vendedores)
 TRUNCATE TABLE gold.dim_seller CASCADE;
 INSERT INTO gold.dim_seller (seller_id, seller_city, seller_state)
 SELECT DISTINCT
@@ -37,7 +40,7 @@ SELECT DISTINCT
     s.seller_state
 FROM clean.sellers s;
 
--- 4. Dimension de fechas (a partir del timestamp de compra)
+-- 4. Dimensión: dim_date (fechas derivadas del timestamp de compra)
 TRUNCATE TABLE gold.dim_date CASCADE;
 INSERT INTO gold.dim_date (full_date, year, month, day, week, quarter)
 SELECT DISTINCT
@@ -51,11 +54,11 @@ FROM clean.orders o
 WHERE o.order_purchase_timestamp IS NOT NULL;
 
 -- 5. Tabla de hechos: fact_sales
---    Calculo del pago proporcional por item
+--    Se calcula el pago proporcional por ítem.
 TRUNCATE TABLE gold.fact_sales;
 
 WITH order_prices AS (
-    -- Precio total por orden (denominador para la proporcion)
+    -- Precio total por orden (denominador para la proporción)
     SELECT
         order_id,
         SUM(price) AS total_order_price
@@ -63,8 +66,9 @@ WITH order_prices AS (
     GROUP BY order_id
 ),
 order_payments_agg AS (
-    -- Pago total por orden y tipo de pago principal (el de mayor valor)
-    -- (Se usa DISTINCT ON con ORDER BY payment_value DESC para elegir el tipo representativo)
+    -- Pago total por orden y tipo de pago principal (el de mayor valor).
+    -- Se usa DISTINCT ON con ORDER BY payment_value DESC para elegir
+    -- el tipo representativo.
     SELECT DISTINCT ON (op.order_id)
         op.order_id,
         SUM(op.payment_value) OVER (PARTITION BY op.order_id) AS total_payment,
@@ -74,7 +78,7 @@ order_payments_agg AS (
     ORDER BY op.order_id, op.payment_value DESC
 ),
 order_reviews_agg AS (
-    -- Review score promedio por orden (redondeado al entero mas cercano)
+    -- Review score promedio por orden (redondeado al entero más cercano)
     SELECT
         order_id,
         ROUND(AVG(review_score))::INT AS avg_review_score
@@ -110,7 +114,7 @@ SELECT
     o.order_status,
     oi.price,
     oi.freight_value,
-    -- Pago proporcional: (price_item / total_orden) * total_pagado_orden
+    -- Pago proporcional: (precio_ítem / total_orden) * total_pagado_orden
     ROUND(
         (oi.price / NULLIF(op.total_order_price, 0)) * opa.total_payment,
         2
@@ -138,7 +142,7 @@ LEFT JOIN gold.dim_product dp
 LEFT JOIN gold.dim_seller ds
     ON oi.seller_id = ds.seller_id;
 
--- Indices para rendimiento en consultas analiticas
+-- Índices para rendimiento en consultas analíticas
 CREATE INDEX IF NOT EXISTS idx_fact_sales_order_date   ON gold.fact_sales(order_purchase_date);
 CREATE INDEX IF NOT EXISTS idx_fact_sales_order_status ON gold.fact_sales(order_status);
 CREATE INDEX IF NOT EXISTS idx_fact_sales_payment_type ON gold.fact_sales(payment_type);

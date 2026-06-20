@@ -5,6 +5,11 @@ import {
   TrendFilters,
 } from '../../src/domain/ports/IKpiRepository';
 
+/**
+ * Repositorio mock que retorna datos de tendencia fijos.
+ * Implementa IKpiRepository y solo define getRevenueTrend;
+ * el resto de métodos lanzan error.
+ */
 class MockTrendRepository implements IKpiRepository {
   async getRevenueTrend(_filters: TrendFilters): Promise<RevenueTrend[]> {
     return [
@@ -32,6 +37,7 @@ describe('GetRevenueTrend', () => {
     useCase = new GetRevenueTrend(repository);
   });
 
+  /** La ejecución debe devolver un arreglo de RevenueTrend con 3 elementos */
   it('debe retornar una lista de puntos de tendencia con revenue y orderCount', async () => {
     const result = await useCase.execute({ grain: 'day' });
 
@@ -44,6 +50,7 @@ describe('GetRevenueTrend', () => {
     expect(result[0].orderCount).toBe(25);
   });
 
+  /** El filtro grain=week debe propagarse al repositorio */
   it('debe pasar el grain week al repositorio', async () => {
     const spy = jest.spyOn(repository, 'getRevenueTrend');
 
@@ -54,6 +61,7 @@ describe('GetRevenueTrend', () => {
     );
   });
 
+  /** Los filtros adicionales (fechas, estado, pago) deben propagarse */
   it('debe pasar los filtros adicionales al repositorio', async () => {
     const spy = jest.spyOn(repository, 'getRevenueTrend');
 

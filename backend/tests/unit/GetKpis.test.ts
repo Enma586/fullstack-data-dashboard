@@ -2,6 +2,11 @@ import { GetKpis } from '../../src/application/GetKpis';
 import { KpiSummary } from '../../src/domain/entities/KpiSummary';
 import { IKpiRepository, KpiFilters } from '../../src/domain/ports/IKpiRepository';
 
+/**
+ * Repositorio mock que retorna valores fijos para el caso de uso GetKpis.
+ * Implementa IKpiRepository y solo define getKpis; los demás métodos
+ * lanzan error para indicar que no están implementados.
+ */
 class MockKpiRepository implements IKpiRepository {
   async getKpis(_filters: KpiFilters): Promise<KpiSummary> {
     return new KpiSummary(
@@ -34,6 +39,7 @@ describe('GetKpis', () => {
     useCase = new GetKpis(repository);
   });
 
+  /** Debe retornar un KpiSummary con todos los valores numéricos esperados */
   it('debe retornar un resumen de KPIs con valores numericos correctos', async () => {
     const result = await useCase.execute({});
 
@@ -45,6 +51,7 @@ describe('GetKpis', () => {
     expect(result.cancellationRate).toBe(0.02);
   });
 
+  /** Los desgloses por estado y tipo de pago deben coincidir con el mock */
   it('debe retornar desgloses por estado y tipo de pago', async () => {
     const result = await useCase.execute({});
 
@@ -57,6 +64,7 @@ describe('GetKpis', () => {
     expect(result.ordersByPaymentType[0].revenue).toBe(80000);
   });
 
+  /** Las categorías principales deben incluir los datos del mock */
   it('debe retornar categorias principales', async () => {
     const result = await useCase.execute({});
 
@@ -65,6 +73,7 @@ describe('GetKpis', () => {
     expect(result.topCategories[0].revenue).toBe(40000);
   });
 
+  /** Los filtros recibidos deben propagarse al repositorio */
   it('debe pasar los filtros al repositorio', async () => {
     const spy = jest.spyOn(repository, 'getKpis');
 

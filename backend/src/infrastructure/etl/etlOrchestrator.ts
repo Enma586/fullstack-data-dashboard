@@ -5,6 +5,7 @@ import { parse } from 'csv-parse/sync';
 
 const prisma = new PrismaClient();
 
+/** Mapa que asocia cada tabla del esquema `raw` con su archivo CSV correspondiente. */
 const CSV_FILES: Record<string, string> = {
   orders: 'olist_orders_dataset.csv',
   order_items: 'olist_order_items_dataset.csv',
@@ -16,8 +17,15 @@ const CSV_FILES: Record<string, string> = {
   product_category_name_translation: 'product_category_name_translation.csv',
 };
 
+/** Directorio donde se encuentran los archivos CSV de origen. */
 const DATA_DIR = '/app/data';
 
+/**
+ * Escapa un valor para usarlo de forma segura en una sentencia SQL.
+ * Los valores vacíos o nulos se convierten a `NULL`.
+ * @param value - Valor a escapar.
+ * @returns Cadena lista para interpolar en SQL.
+ */
 function escapeSQLValue(value: string): string {
   if (value === '' || value === undefined || value === null) {
     return 'NULL';
@@ -26,6 +34,11 @@ function escapeSQLValue(value: string): string {
   return `'${escaped}'`;
 }
 
+/**
+ * Parsea un archivo CSV y retorna un arreglo de registros como objetos clave-valor.
+ * @param filePath - Ruta absoluta al archivo CSV.
+ * @returns Arreglo de registros planos.
+ */
 function parseCSV(filePath: string): Record<string, string>[] {
   const content = readFileSync(filePath, 'utf-8');
   return parse(content, {
@@ -35,6 +48,11 @@ function parseCSV(filePath: string): Record<string, string>[] {
   });
 }
 
+/**
+ * Ejecuta un archivo SQL ubicado en el directorio `sql/`.
+ * Divide el contenido por punto y coma y ejecuta cada sentencia individualmente.
+ * @param filename - Nombre del archivo SQL (ej. `01_init_schemas.sql`).
+ */
 async function executeSQLFile(filename: string): Promise<void> {
   const filePath = join(__dirname, 'sql', filename);
   const sql = readFileSync(filePath, 'utf-8');
@@ -49,6 +67,10 @@ async function executeSQLFile(filename: string): Promise<void> {
   console.info(`Ejecutado: ${filename}`);
 }
 
+/**
+ * Importa todos los archivos CSV definidos en {@link CSV_FILES} hacia las
+ * tablas correspondientes del esquema `raw` en lotes de 500 registros.
+ */
 async function importCSVToRaw(): Promise<void> {
   for (const [table, csvFile] of Object.entries(CSV_FILES)) {
     const csvPath = join(DATA_DIR, csvFile);
@@ -77,6 +99,14 @@ async function importCSVToRaw(): Promise<void> {
   }
 }
 
+/**
+ * Orquesta el flujo completo ETL:
+ *  1. Creación de esquemas (raw, clean, gold).
+ *  2. Creación de tablas raw e importación de CSVs.
+ *  3. Transformación de raw a clean.
+ *  4. Transformación de clean a gold (modelo estrella).
+ * En caso de error, finaliza el proceso con código 1.
+ */
 async function runETL(): Promise<void> {
   const startTime = Date.now();
   console.info('=== INICIO DEL PROCESO ETL ===');

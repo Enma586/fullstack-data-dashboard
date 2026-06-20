@@ -20,6 +20,10 @@ import {
   TopProductFilters,
 } from '../../src/domain/ports/IKpiRepository';
 
+/**
+ * Repositorio mock completo para pruebas de integración.
+ * Implementa todos los métodos de IKpiRepository con datos fijos.
+ */
 class MockRepository implements IKpiRepository {
   async getKpis(_filters: KpiFilters): Promise<KpiSummary> {
     return new KpiSummary(
@@ -65,6 +69,10 @@ class MockRepository implements IKpiRepository {
   }
 }
 
+/**
+ * Construye una aplicación Express de prueba con los routers y el
+ * manejador de errores, usando el MockRepository como respaldo.
+ */
 function createTestApp(): express.Application {
   const app = express();
   app.use(express.json());
@@ -94,6 +102,7 @@ describe('API de KPIs (Integracion)', () => {
   });
 
   describe('GET /health', () => {
+    /** El endpoint de salud debe responder 200 con status "ok" y timestamp */
     it('debe retornar 200 con status ok', async () => {
       const res = await request(app).get('/health');
 
@@ -104,6 +113,7 @@ describe('API de KPIs (Integracion)', () => {
   });
 
   describe('GET /kpis', () => {
+    /** La respuesta debe incluir todos los campos del KpiSummary */
     it('debe retornar 200 con estructura completa de KPIs', async () => {
       const res = await request(app).get('/kpis');
 
@@ -117,6 +127,7 @@ describe('API de KPIs (Integracion)', () => {
       expect(res.body.topCategories).toHaveLength(2);
     });
 
+    /** Los filtros opcionales en query string no deben romper la respuesta */
     it('debe aceptar filtros opcionales en query string', async () => {
       const res = await request(app).get(
         '/kpis?from=2020-01-01&to=2020-03-01&customer_state=SP&payment_type=credit_card',
@@ -125,6 +136,7 @@ describe('API de KPIs (Integracion)', () => {
       expect(res.status).toBe(200);
     });
 
+    /** customer_state inválido debe devolver 400 */
     it('debe retornar 400 cuando customer_state es invalido', async () => {
       const res = await request(app).get('/kpis?customer_state=INVALIDO');
 
@@ -132,6 +144,7 @@ describe('API de KPIs (Integracion)', () => {
       expect(res.body).toHaveProperty('error');
     });
 
+    /** payment_type inválido debe devolver 400 */
     it('debe retornar 400 cuando payment_type es invalido', async () => {
       const res = await request(app).get('/kpis?payment_type=invalid');
 
@@ -139,6 +152,7 @@ describe('API de KPIs (Integracion)', () => {
       expect(res.body).toHaveProperty('error');
     });
 
+    /** Una fecha inválida en from debe devolver 400 */
     it('debe retornar 400 cuando from no es una fecha valida', async () => {
       const res = await request(app).get('/kpis?from=no-es-fecha');
 
@@ -148,6 +162,7 @@ describe('API de KPIs (Integracion)', () => {
   });
 
   describe('GET /trend/revenue', () => {
+    /** Sin parámetros debe retornar tendencia diaria */
     it('debe retornar 200 con tendencia diaria por defecto', async () => {
       const res = await request(app).get('/trend/revenue');
 
@@ -158,6 +173,7 @@ describe('API de KPIs (Integracion)', () => {
       expect(res.body[0]).toHaveProperty('orderCount');
     });
 
+    /** grain=week debe cambiar la agrupación a semanal */
     it('debe retornar tendencia semanal cuando grain=week', async () => {
       const res = await request(app).get('/trend/revenue?grain=week');
 
@@ -165,6 +181,7 @@ describe('API de KPIs (Integracion)', () => {
       expect(res.body[0].period).toBeDefined();
     });
 
+    /** Un valor inválido para grain debe devolver 400 */
     it('debe retornar 400 cuando grain es invalido', async () => {
       const res = await request(app).get('/trend/revenue?grain=month');
 
@@ -172,6 +189,7 @@ describe('API de KPIs (Integracion)', () => {
       expect(res.body).toHaveProperty('error');
     });
 
+    /** Todos los filtros combinados deben funcionar juntos */
     it('debe retornar 200 con todos los filtros combinados', async () => {
       const res = await request(app).get(
         '/trend/revenue?grain=day&from=2020-01-01&to=2020-02-01&customer_state=SP&payment_type=credit_card',

@@ -1,3 +1,16 @@
+# =============================================================================
+# docker-compose.yml — Orquestación del proyecto fullstack-dashboard
+#
+# Define y coordina los tres servicios principales del sistema:
+#   - postgres : Base de datos PostgreSQL 16 (Alpine) para el Data Warehouse
+#   - backend  : API Express con Node.js 20 (Alpine), ejecuta ETL y servidor
+#   - frontend : Aplicación frontend construida con Vite + React
+#
+# Dependencias:
+#   backend  → postgres (espera healthcheck)
+#   frontend → backend
+# =============================================================================
+
 version: "3.9"
 
 services:

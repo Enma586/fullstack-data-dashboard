@@ -1,3 +1,17 @@
+-- =============================================================================
+-- Creación de tablas en la capa raw
+-- =============================================================================
+-- Propósito: Definir las tablas que almacenan los datos tal cual se importan
+--            desde los archivos CSV de Olist. Todas las columnas son tipo TEXT
+--            para evitar errores de conversión durante la ingesta.
+--
+-- Nota: Las tablas se eliminan (DROP IF EXISTS) antes de crearse para
+--       permitir ejecuciones idempotentes del script.
+-- =============================================================================
+
+-- ---------------------------------------------------------------------------
+-- raw.orders       — Órdenes de compra
+-- ---------------------------------------------------------------------------
 DROP TABLE IF EXISTS raw.orders CASCADE;
 CREATE TABLE raw.orders (
     order_id                        TEXT,
@@ -10,6 +24,9 @@ CREATE TABLE raw.orders (
     order_estimated_delivery_date   TEXT
 );
 
+-- ---------------------------------------------------------------------------
+-- raw.order_items  — Ítems por orden (varios por orden)
+-- ---------------------------------------------------------------------------
 DROP TABLE IF EXISTS raw.order_items CASCADE;
 CREATE TABLE raw.order_items (
     order_id            TEXT,
@@ -21,6 +38,9 @@ CREATE TABLE raw.order_items (
     freight_value       TEXT
 );
 
+-- ---------------------------------------------------------------------------
+-- raw.order_payments — Pagos asociados a cada orden
+-- ---------------------------------------------------------------------------
 DROP TABLE IF EXISTS raw.order_payments CASCADE;
 CREATE TABLE raw.order_payments (
     order_id            TEXT,
@@ -30,6 +50,9 @@ CREATE TABLE raw.order_payments (
     payment_value       TEXT
 );
 
+-- ---------------------------------------------------------------------------
+-- raw.customers       — Datos de clientes
+-- ---------------------------------------------------------------------------
 DROP TABLE IF EXISTS raw.customers CASCADE;
 CREATE TABLE raw.customers (
     customer_id          TEXT,
@@ -39,6 +62,9 @@ CREATE TABLE raw.customers (
     customer_state       TEXT
 );
 
+-- ---------------------------------------------------------------------------
+-- raw.products         — Catálogo de productos
+-- ---------------------------------------------------------------------------
 DROP TABLE IF EXISTS raw.products CASCADE;
 CREATE TABLE raw.products (
     product_id                 TEXT,
@@ -52,6 +78,9 @@ CREATE TABLE raw.products (
     product_width_cm           TEXT
 );
 
+-- ---------------------------------------------------------------------------
+-- raw.sellers          — Datos de vendedores
+-- ---------------------------------------------------------------------------
 DROP TABLE IF EXISTS raw.sellers CASCADE;
 CREATE TABLE raw.sellers (
     seller_id              TEXT,
@@ -60,6 +89,9 @@ CREATE TABLE raw.sellers (
     seller_state           TEXT
 );
 
+-- ---------------------------------------------------------------------------
+-- raw.order_reviews    — Reseñas de órdenes
+-- ---------------------------------------------------------------------------
 DROP TABLE IF EXISTS raw.order_reviews CASCADE;
 CREATE TABLE raw.order_reviews (
     review_id               TEXT,
@@ -71,6 +103,9 @@ CREATE TABLE raw.order_reviews (
     review_answer_timestamp TEXT
 );
 
+-- ---------------------------------------------------------------------------
+-- raw.product_category_name_translation — Traducción de categorías
+-- ---------------------------------------------------------------------------
 DROP TABLE IF EXISTS raw.product_category_name_translation CASCADE;
 CREATE TABLE raw.product_category_name_translation (
     product_category_name         TEXT,

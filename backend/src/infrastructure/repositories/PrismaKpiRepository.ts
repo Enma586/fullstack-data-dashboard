@@ -14,11 +14,24 @@ type RawRow<T> = T extends Date
   ? { period: Date; revenue: string; order_count: bigint }
   : never;
 
+/**
+ * Repositorio de KPI que implementa la interfaz {@link IKpiRepository}
+ * usando Prisma con consultas SQL en crudo sobre el esquema estrella `gold`.
+ */
 export class PrismaKpiRepository implements IKpiRepository {
+  /**
+   * Construye la cláusula LEFT JOIN contra la tabla `gold.dim_customer`.
+   * @returns Fragmento SQL del JOIN.
+   */
   private joinClause(): string {
     return 'LEFT JOIN gold.dim_customer dc ON fs.customer_sk = dc.customer_sk';
   }
 
+  /**
+   * Genera condiciones WHERE parametrizadas a partir de los filtros recibidos.
+   * @param filters - Filtros de KPI (rango de fechas, estado, tipo de pago).
+   * @returns Objeto con el SQL de las condiciones y un arreglo de parámetros.
+   */
   private whereConditions(
     filters: KpiFilters,
   ): { sql: string; params: (string | Date)[] } {
@@ -50,6 +63,12 @@ export class PrismaKpiRepository implements IKpiRepository {
     return { sql: conditions.join(' AND '), params };
   }
 
+  /**
+   * Combina la cláusula JOIN con las condiciones WHERE.
+   * Si no hay filtros activos retorna solo el JOIN.
+   * @param filters - Filtros de KPI.
+   * @returns Fragmento SQL completo (JOIN + opcional WHERE) y sus parámetros.
+   */
   private whereAndJoin(
     filters: KpiFilters,
   ): { sql: string; params: (string | Date)[] } {
@@ -59,6 +78,12 @@ export class PrismaKpiRepository implements IKpiRepository {
     return { sql: `${join} WHERE ${w.sql}`, params: w.params };
   }
 
+  /**
+   * Obtiene el resumen de KPI globales (ingresos, pedidos, tasa de cancelación, etc.)
+   * junto con desgloses por estado, tipo de pago y categorías más vendidas.
+   * @param filters - Filtros opcionales para acotar la consulta.
+   * @returns Promesa con una instancia de {@link KpiSummary}.
+   */
   async getKpis(filters: KpiFilters): Promise<KpiSummary> {
     const wj = this.whereAndJoin(filters);
 
@@ -160,6 +185,11 @@ export class PrismaKpiRepository implements IKpiRepository {
     );
   }
 
+  /**
+   * Obtiene la tendencia de ingresos en el tiempo agregada por día o semana.
+   * @param filters - Filtros que incluyen el grano (day/week) y rango de fechas.
+   * @returns Promesa con un arreglo de {@link RevenueTrend}.
+   */
   async getRevenueTrend(filters: TrendFilters): Promise<RevenueTrend[]> {
     const wj = this.whereAndJoin(filters);
     const trunc = filters.grain === 'week' ? 'week' : 'day';
@@ -192,6 +222,11 @@ export class PrismaKpiRepository implements IKpiRepository {
     );
   }
 
+  /**
+   * Obtiene el ranking de productos más vendidos por ingresos.
+   * @param filters - Filtros que incluyen el límite de resultados y rango de fechas.
+   * @returns Promesa con un arreglo de {@link ProductRanking}.
+   */
   async getTopProducts(filters: TopProductFilters): Promise<ProductRanking[]> {
     const wj = this.whereAndJoin(filters);
     const limit = filters.limit ?? 10;

@@ -11,6 +11,7 @@ import { createHealthRouter } from './adapters/http/routes/health.routes';
 import { createKpiRouter } from './adapters/http/routes/kpi.routes';
 import { createTrendRouter } from './adapters/http/routes/trend.routes';
 
+/** Puerto del servidor HTTP. Se obtiene de la variable de entorno `PORT` o por defecto 3000. */
 const PORT = process.env.PORT ?? 3000;
 
 const repository = new PrismaKpiRepository();

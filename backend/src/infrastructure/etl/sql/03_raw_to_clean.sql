@@ -1,5 +1,16 @@
--- Limpieza y transformacion de datos raw a clean
+-- =============================================================================
+-- Transformación raw -> clean (Limpieza y tipado)
+-- =============================================================================
+-- Propósito: Convertir los datos crudos (TEXT) a sus tipos nativos
+--            (TIMESTAMP, INT, NUMERIC) y reemplazar cadenas vacías con NULL
+--            mediante NULLIF.
+--
+-- Nota: El patrón DROP + CREATE AS aseguta idempotencia.
+-- =============================================================================
 
+-- ---------------------------------------------------------------------------
+-- clean.orders — Conversión de timestamps
+-- ---------------------------------------------------------------------------
 DROP TABLE IF EXISTS clean.orders CASCADE;
 CREATE TABLE clean.orders AS
 SELECT
@@ -13,6 +24,9 @@ SELECT
     NULLIF(order_estimated_delivery_date, '')::TIMESTAMP  AS order_estimated_delivery_date
 FROM raw.orders;
 
+-- ---------------------------------------------------------------------------
+-- clean.order_items — Conversión de numéricos y timestamps
+-- ---------------------------------------------------------------------------
 DROP TABLE IF EXISTS clean.order_items CASCADE;
 CREATE TABLE clean.order_items AS
 SELECT
@@ -25,6 +39,9 @@ SELECT
     NULLIF(freight_value, '')::NUMERIC(10,2)    AS freight_value
 FROM raw.order_items;
 
+-- ---------------------------------------------------------------------------
+-- clean.order_payments — Conversión de enteros y numéricos
+-- ---------------------------------------------------------------------------
 DROP TABLE IF EXISTS clean.order_payments CASCADE;
 CREATE TABLE clean.order_payments AS
 SELECT
@@ -35,6 +52,9 @@ SELECT
     NULLIF(payment_value, '')::NUMERIC(10,2) AS payment_value
 FROM raw.order_payments;
 
+-- ---------------------------------------------------------------------------
+-- clean.customers — Sin transformación (todo es texto)
+-- ---------------------------------------------------------------------------
 DROP TABLE IF EXISTS clean.customers CASCADE;
 CREATE TABLE clean.customers AS
 SELECT
@@ -45,6 +65,9 @@ SELECT
     customer_state
 FROM raw.customers;
 
+-- ---------------------------------------------------------------------------
+-- clean.products — Conversión de numéricos
+-- ---------------------------------------------------------------------------
 DROP TABLE IF EXISTS clean.products CASCADE;
 CREATE TABLE clean.products AS
 SELECT
@@ -59,6 +82,9 @@ SELECT
     NULLIF(product_width_cm, '')::NUMERIC   AS product_width_cm
 FROM raw.products;
 
+-- ---------------------------------------------------------------------------
+-- clean.sellers — Sin transformación
+-- ---------------------------------------------------------------------------
 DROP TABLE IF EXISTS clean.sellers CASCADE;
 CREATE TABLE clean.sellers AS
 SELECT
@@ -68,6 +94,9 @@ SELECT
     seller_state
 FROM raw.sellers;
 
+-- ---------------------------------------------------------------------------
+-- clean.order_reviews — Conversión de score y timestamps
+-- ---------------------------------------------------------------------------
 DROP TABLE IF EXISTS clean.order_reviews CASCADE;
 CREATE TABLE clean.order_reviews AS
 SELECT
@@ -80,6 +109,9 @@ SELECT
     NULLIF(review_answer_timestamp, '')::TIMESTAMP AS review_answer_timestamp
 FROM raw.order_reviews;
 
+-- ---------------------------------------------------------------------------
+-- clean.product_category_name_translation — Sin transformación
+-- ---------------------------------------------------------------------------
 DROP TABLE IF EXISTS clean.product_category_name_translation CASCADE;
 CREATE TABLE clean.product_category_name_translation AS
 SELECT

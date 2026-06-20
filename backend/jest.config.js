@@ -1,4 +1,12 @@
-/** @type {import('ts-jest').JestConfigWithTsJest} */
+/**
+ * Configuración de Jest para el backend del dashboard Olist.
+ *
+ * Utiliza el preset ts-jest para compilar TypeScript sobre la marcha.
+ * Busca tests en el directorio <rootDir>/tests con el patrón **/*.test.ts.
+ * La cobertura se recopila desde src/**/*.ts y se genera en formato text y lcov.
+ *
+ * @type {import('ts-jest').JestConfigWithTsJest}
+ */
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',

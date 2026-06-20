@@ -1,9 +1,32 @@
+/**
+ * DTOs para parámetros de filtro de consultas HTTP.
+ * @module dtos/FilterParamsDto
+ */
+
+/**
+ * DTO que encapsula y valida los parámetros de filtro provenientes de la
+ * cadena de consulta HTTP. Soporta los parámetros from, to, customer_state
+ * y payment_type.
+ */
 export class FilterParamsDto {
+  /** Fecha de inicio del filtro (opcional). */
   public readonly from?: Date;
+
+  /** Fecha de fin del filtro (opcional, se ajusta al día siguiente). */
   public readonly to?: Date;
+
+  /** Código de estado del cliente de dos letras (opcional, ej. SP). */
   public readonly customerState?: string;
+
+  /** Tipo de pago normalizado (opcional, ej. credit_card). */
   public readonly paymentType?: string;
 
+  /**
+   * Construye el DTO a partir de un conjunto de parámetros planos. Realiza
+   * validación de fechas, código de estado y tipo de pago.
+   * @param params - Objeto con los parámetros de consulta.
+   * @throws Error si algún parámetro tiene un formato inválido.
+   */
   protected constructor(params: Record<string, string | undefined>) {
     const from = params.from ?? params['from'];
     const to = params.to ?? params['to'];
@@ -49,12 +72,21 @@ export class FilterParamsDto {
     }
   }
 
+  /**
+   * Crea una instancia de FilterParamsDto desde los parámetros de consulta.
+   * @param query - Objeto con los parámetros de la cadena de consulta.
+   * @returns Una nueva instancia de FilterParamsDto.
+   */
   static fromQuery(
     query: Record<string, string | undefined>,
   ): FilterParamsDto {
     return new FilterParamsDto(query);
   }
 
+  /**
+   * Convierte el DTO a un objeto plano de filtros.
+   * @returns Objeto con las propiedades from, to, customerState y paymentType.
+   */
   toFilters() {
     return {
       from: this.from,
