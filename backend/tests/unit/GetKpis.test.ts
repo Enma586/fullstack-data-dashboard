@@ -87,7 +87,7 @@ describe('GetKpis', () => {
       from: new Date('2020-01-01'),
       to: new Date('2020-02-01'),
       customerState: 'RJ',
-      paymentType: 'boleto',
+      orderStatus: 'delivered',
     };
 
     await useCase.execute(filters);

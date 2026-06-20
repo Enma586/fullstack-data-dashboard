@@ -124,9 +124,9 @@ Cada fila en `gold.fact_sales` representa **un item de una orden** (grano: `orde
 | `gold.dim_customer` | Dimension | `customer_sk` (PK), `customer_id`, `customer_city`, `customer_state` | — |
 | `gold.dim_product` | Dimension | `product_sk` (PK), `product_id`, `product_category_name`, `product_category_name_english` | — |
 | `gold.dim_seller` | Dimension | `seller_sk` (PK), `seller_id`, `seller_city`, `seller_state` | — |
-| `gold.dim_date` | Dimension | `date_sk` (PK), `full_date`, `year`, `month`, `day`, `week`, `quarter` | — |
+| `gold.dim_date` | Dimension | `date_sk` (PK), `full_date`, `year`, `month`, `day`, `week`, `quarter` | Referenciada desde `fact_sales.date_sk` |
 | `gold.dim_order` | Dimension | `order_sk` (PK), `order_id`, `order_status`, timestamps, `is_delivered`, `is_canceled`, `is_on_time` | — |
-| `gold.fact_sales` | Hechos | `fact_sk` (PK), `price`, `freight_value`, `gmv`, `payment_value_allocated`, `payment_type`, `payment_installments`, `review_score` | `customer_sk`, `product_sk`, `seller_sk`, `order_sk`, `order_purchase_date` |
+| `gold.fact_sales` | Hechos | `fact_sk` (PK), `price`, `freight_value`, `gmv`, `payment_value_allocated`, `payment_type`, `payment_installments`, `review_score` | `customer_sk`, `product_sk`, `seller_sk`, `order_sk`, `date_sk` |
 
 ### Diagrama del modelo estrella
 

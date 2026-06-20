@@ -135,6 +135,7 @@ CREATE TABLE gold.fact_sales (
     product_sk                    INT REFERENCES gold.dim_product(product_sk),
     seller_sk                     INT REFERENCES gold.dim_seller(seller_sk),
     order_sk                      INT REFERENCES gold.dim_order(order_sk),
+    date_sk                       INT REFERENCES gold.dim_date(date_sk),
     order_purchase_date           DATE,
     order_status                  VARCHAR(20),
     price                         NUMERIC(10,2),
@@ -184,7 +185,7 @@ order_reviews_agg AS (
 )
 INSERT INTO gold.fact_sales (
     order_id, order_item_id, customer_sk, product_sk, seller_sk, order_sk,
-    order_purchase_date, order_status, price, freight_value, gmv,
+    date_sk, order_purchase_date, order_status, price, freight_value, gmv,
     payment_value_allocated, payment_type, payment_installments, review_score,
     order_purchase_timestamp, order_approved_at, order_delivered_customer_date,
     order_estimated_delivery_date, is_delivered, is_canceled, is_on_time
@@ -196,6 +197,7 @@ SELECT
     dp.product_sk,
     ds.seller_sk,
     dor.order_sk,
+    dd.date_sk,
     o.order_purchase_timestamp::DATE,
     o.order_status,
     oi.price,
@@ -223,7 +225,8 @@ LEFT JOIN order_reviews_agg ora ON o.order_id = ora.order_id
 LEFT JOIN gold.dim_customer dc ON o.customer_id = dc.customer_id
 LEFT JOIN gold.dim_product dp ON oi.product_id = dp.product_id
 LEFT JOIN gold.dim_seller ds ON oi.seller_id = ds.seller_id
-LEFT JOIN gold.dim_order dor ON o.order_id = dor.order_id;
+LEFT JOIN gold.dim_order dor ON o.order_id = dor.order_id
+LEFT JOIN gold.dim_date dd ON o.order_purchase_timestamp::DATE = dd.full_date;
 
 -- Índices para rendimiento en consultas analíticas
 CREATE INDEX IF NOT EXISTS idx_fact_sales_order_date   ON gold.fact_sales(order_purchase_date);

@@ -23,6 +23,7 @@ model FactSales {
   product_sk                    Int?      // # FK hacia dim_product.
   seller_sk                     Int?      // # FK hacia dim_seller.
   order_sk                      Int?      // # FK hacia dim_order.
+  date_sk                       Int?      // # FK hacia dim_date.
   order_purchase_date           DateTime? @db.Date // # Fecha de compra (sin hora).
   order_status                  String?   // # Estado del pedido (ej. delivered, canceled).
   price                         Decimal?  @db.Decimal(10, 2) // # Precio del ítem.
@@ -44,6 +45,7 @@ model FactSales {
   product  DimProduct?  @relation(fields: [product_sk], references: [product_sk])
   seller   DimSeller?   @relation(fields: [seller_sk], references: [seller_sk])
   order    DimOrder?    @relation(fields: [order_sk], references: [order_sk])
+  date     DimDate?     @relation(fields: [date_sk], references: [date_sk])
 
   @@schema("gold")
   @@map("fact_sales")
@@ -97,6 +99,8 @@ model DimDate {
   day        Int?    // # Día del mes (1-31).
   week       Int?    // # Semana del año (1-53).
   quarter    Int?    // # Trimestre (1-4).
+
+  sales FactSales[]
 
   @@schema("gold")
   @@map("dim_date")

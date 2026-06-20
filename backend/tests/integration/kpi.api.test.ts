@@ -132,7 +132,7 @@ describe('API de KPIs (Integracion)', () => {
 
     it('debe aceptar filtros opcionales en query string', async () => {
       const res = await request(app).get(
-        '/kpis?from=2020-01-01&to=2020-03-01&customer_state=SP&payment_type=credit_card',
+        '/kpis?from=2020-01-01&to=2020-03-01&customer_state=SP&order_status=delivered',
       );
 
       expect(res.status).toBe(200);
@@ -145,8 +145,8 @@ describe('API de KPIs (Integracion)', () => {
       expect(res.body).toHaveProperty('error');
     });
 
-    it('debe retornar 400 cuando payment_type es invalido', async () => {
-      const res = await request(app).get('/kpis?payment_type=invalid');
+    it('debe retornar 400 cuando order_status es invalido', async () => {
+      const res = await request(app).get('/kpis?order_status=invalid_status');
 
       expect(res.status).toBe(400);
       expect(res.body).toHaveProperty('error');
@@ -187,7 +187,7 @@ describe('API de KPIs (Integracion)', () => {
 
     it('debe retornar 200 con todos los filtros combinados', async () => {
       const res = await request(app).get(
-        '/trend/revenue?grain=day&from=2020-01-01&to=2020-02-01&customer_state=SP&payment_type=credit_card',
+        '/trend/revenue?grain=day&from=2020-01-01&to=2020-02-01&customer_state=SP&order_status=delivered',
       );
 
       expect(res.status).toBe(200);

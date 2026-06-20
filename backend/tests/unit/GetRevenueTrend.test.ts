@@ -70,7 +70,7 @@ describe('GetRevenueTrend', () => {
       from: new Date('2020-01-01'),
       to: new Date('2020-02-01'),
       customerState: 'SP',
-      paymentType: 'credit_card',
+      orderStatus: 'delivered',
     };
 
     await useCase.execute(filters);
