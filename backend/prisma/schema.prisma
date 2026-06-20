@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model FactSales {
+  fact_sk                       Int       @id @default(autoincrement())
+  order_id                      String
+  order_item_id                 Int
+  customer_sk                   Int?
+  product_sk                    Int?
+  seller_sk                     Int?
+  order_purchase_date           DateTime? @db.Date
+  order_status                  String?
+  price                         Decimal?  @db.Decimal(10, 2)
+  freight_value                 Decimal?  @db.Decimal(10, 2)
+  payment_value_allocated       Decimal?  @db.Decimal(10, 2)
+  payment_type                  String?
+  payment_installments          Int?
+  review_score                  Int?
+  order_purchase_timestamp      DateTime?
+  order_approved_at             DateTime?
+  order_delivered_customer_date DateTime?
+  order_estimated_delivery_date DateTime?
+
+  customer DimCustomer? @relation(fields: [customer_sk], references: [customer_sk])
+  product  DimProduct?  @relation(fields: [product_sk], references: [product_sk])
+  seller   DimSeller?   @relation(fields: [seller_sk], references: [seller_sk])
+
+  @@schema("gold")
+  @@map("fact_sales")
+}
+
+model DimCustomer {
+  customer_sk       Int         @id @default(autoincrement())
+  customer_id       String      @unique
+  customer_city     String?
+  customer_state    String?
+
+  sales FactSales[]
+
+  @@schema("gold")
+  @@map("dim_customer")
+}
+
+model DimProduct {
+  product_sk                  Int         @id @default(autoincrement())
+  product_id                  String      @unique
+  product_category_name       String?
+  product_category_name_english String?
+
+  sales FactSales[]
+
+  @@schema("gold")
+  @@map("dim_product")
+}
+
+model DimSeller {
+  seller_sk    Int         @id @default(autoincrement())
+  seller_id    String      @unique
+  seller_city  String?
+  seller_state String?
+
+  sales FactSales[]
+
+  @@schema("gold")
+  @@map("dim_seller")
+}
+
+model DimDate {
+  date_sk    Int         @id @default(autoincrement())
+  full_date  DateTime    @unique @db.Date
+  year       Int?
+  month      Int?
+  day        Int?
+  week       Int?
+  quarter    Int?
+
+  @@schema("gold")
+  @@map("dim_date")
+}
