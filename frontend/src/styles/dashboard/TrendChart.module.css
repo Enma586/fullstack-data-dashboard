@@ -2,11 +2,6 @@
   position: relative;
 }
 
-.chartContainer {
-  width: 100%;
-  overflow: hidden;
-}
-
 .svg {
   display: block;
   width: 100%;
@@ -17,11 +12,11 @@
   display: flex;
   gap: var(--spacing-lg);
   justify-content: center;
-  margin-top: var(--spacing-md);
-  padding: var(--spacing-sm) var(--spacing-lg);
-  background: rgba(255, 255, 255, 0.03);
+  margin-top: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: rgba(168, 85, 247, 0.04);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
+  border: 1px solid rgba(168, 85, 247, 0.1);
 }
 
 .legendItem {
@@ -34,19 +29,26 @@
 }
 
 .legendDot {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: var(--radius-full);
-  box-shadow: 0 0 6px currentColor;
 }
 
 .emptyChart {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 300px;
+  height: 260px;
   color: var(--color-text-muted);
   font-size: var(--font-size-sm);
-  border: 1px dashed var(--color-border);
+  border: 1px dashed rgba(168, 85, 247, 0.2);
   border-radius: var(--radius-lg);
+  background: rgba(168, 85, 247, 0.02);
+}
+
+@media (max-width: 640px) {
+  .legend {
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+  }
 }
