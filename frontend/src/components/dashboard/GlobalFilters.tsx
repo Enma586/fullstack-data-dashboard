@@ -34,11 +34,28 @@ const STATE_OPTIONS = [
   { value: "TO", label: "Tocantins" },
 ];
 
-const PAYMENT_OPTIONS = [
-  { value: "credit_card", label: "Tarjeta de Crédito" },
-  { value: "boleto", label: "Boleto" },
-  { value: "voucher", label: "Voucher" },
-  { value: "debit_card", label: "Tarjeta de Débito" },
+const ORDER_STATUS_OPTIONS = [
+  { value: "delivered", label: "Entregado" },
+  { value: "shipped", label: "Enviado" },
+  { value: "processing", label: "Procesando" },
+  { value: "canceled", label: "Cancelado" },
+  { value: "invoiced", label: "Facturado" },
+  { value: "unavailable", label: "No disponible" },
+  { value: "approved", label: "Aprobado" },
+  { value: "created", label: "Creado" },
+];
+
+const CATEGORY_OPTIONS = [
+  { value: "bed_bath_table", label: "Cama, Mesa e Baño" },
+  { value: "health_beauty", label: "Salud y Belleza" },
+  { value: "sports_leisure", label: "Deportes y Ocio" },
+  { value: "furniture_decor", label: "Muebles y Decoración" },
+  { value: "housewares", label: "Utensilios Domésticos" },
+  { value: "informatica_accessories", label: "Informática y Accesorios" },
+  { value: "watches_gifts", label: "Relojes y Regalos" },
+  { value: "telephony", label: "Telefonía" },
+  { value: "garden_tools", label: "Jardín y Herramientas" },
+  { value: "auto", label: "Automotriz" },
 ];
 
 export function GlobalFilters() {
@@ -47,7 +64,8 @@ export function GlobalFilters() {
     setDateFrom,
     setDateTo,
     setCustomerState,
-    setPaymentType,
+    setOrderStatus,
+    setCategory,
     resetFilters,
   } = useFilters();
 
@@ -71,7 +89,7 @@ export function GlobalFilters() {
 
       <div className={styles.filterItem}>
         <Select
-          label="Estado"
+          label="Estado del Cliente"
           options={STATE_OPTIONS}
           value={filters.customerState}
           onChange={setCustomerState}
@@ -81,11 +99,21 @@ export function GlobalFilters() {
 
       <div className={styles.filterItem}>
         <Select
-          label="Tipo de Pago"
-          options={PAYMENT_OPTIONS}
-          value={filters.paymentType}
-          onChange={setPaymentType}
-          placeholder="Todos los pagos"
+          label="Status de Orden"
+          options={ORDER_STATUS_OPTIONS}
+          value={filters.orderStatus}
+          onChange={setOrderStatus}
+          placeholder="Todos los status"
+        />
+      </div>
+
+      <div className={styles.filterItem}>
+        <Select
+          label="Categoría"
+          options={CATEGORY_OPTIONS}
+          value={filters.category}
+          onChange={setCategory}
+          placeholder="Todas las categorías"
         />
       </div>
 

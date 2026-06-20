@@ -21,6 +21,11 @@ function formatPercent(value: number): string {
   return `${(value * 100).toFixed(2)}%`;
 }
 
+function formatIpo(items: number, orders: number): string {
+  if (orders === 0) return "—";
+  return (items / orders).toFixed(2);
+}
+
 interface KpiCardConfig {
   label: string;
   value: string;
@@ -31,9 +36,15 @@ interface KpiCardConfig {
 export function KpiGrid({ data }: KpiGridProps) {
   const cards: KpiCardConfig[] = [
     {
-      label: "Ingresos",
+      label: "GMV",
       value: formatCurrency(data.totalRevenue),
-      subtext: "Revenue total del período",
+      subtext: "Volumen bruto de mercancías",
+      colorClass: styles.kpiPositive,
+    },
+    {
+      label: "Revenue",
+      value: formatCurrency(data.totalRevenue),
+      subtext: "Ingreso total del período",
       colorClass: styles.kpiPositive,
     },
     {
@@ -49,16 +60,22 @@ export function KpiGrid({ data }: KpiGridProps) {
       colorClass: styles.kpiPositive,
     },
     {
-      label: "Cancelados",
-      value: formatNumber(data.cancelledOrders),
-      subtext: "Pedidos cancelados",
-      colorClass: styles.kpiNegative,
+      label: "IPO",
+      value: formatIpo(data.totalItems, data.totalOrders),
+      subtext: "Ítems por pedido",
+      colorClass: styles.kpiNeutral,
     },
     {
       label: "Tasa de Cancelación",
       value: formatPercent(data.cancellationRate),
       subtext: "Proporción sobre el total",
       colorClass: styles.kpiNegative,
+    },
+    {
+      label: "On-Time",
+      value: formatPercent(data.onTimeRate),
+      subtext: "Entregas a tiempo",
+      colorClass: styles.kpiPositive,
     },
   ];
 

@@ -8,7 +8,8 @@ export interface FilterParams {
   from?: string;
   to?: string;
   customer_state?: string;
-  payment_type?: string;
+  order_status?: string;
+  category?: string;
 }
 
 export interface TrendFilterParams extends FilterParams {
@@ -40,6 +41,8 @@ export interface KpiSummaryResponse {
   averageOrderValue: number;
   cancelledOrders: number;
   cancellationRate: number;
+  totalItems: number;
+  onTimeRate: number;
   ordersByState: StateOrderSummary[];
   ordersByPaymentType: PaymentTypeSummary[];
   topCategories: CategorySummary[];
@@ -78,5 +81,6 @@ export interface GlobalFilters {
   dateFrom: string;
   dateTo: string;
   customerState: string;
-  paymentType: string;
+  orderStatus: string;
+  category: string;
 }

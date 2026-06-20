@@ -79,7 +79,7 @@ function LoadingSkeleton() {
           marginBottom: "var(--spacing-xl)",
         }}
       >
-        {Array.from({ length: 5 }).map((_, i) => (
+        {Array.from({ length: 7 }).map((_, i) => (
           <div
             key={i}
             style={{

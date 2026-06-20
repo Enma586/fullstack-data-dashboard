@@ -187,6 +187,8 @@ export class PrismaKpiRepository implements IKpiRepository {
       Math.round(averageOrderValue * 100) / 100,
       cancelledOrders,
       Math.round(cancellationRate * 10000) / 10000,
+      totalItems,
+      Math.round(onTimeRate * 10000) / 10000,
       byState.map((r) => ({
         state: r.state ?? 'N/A',
         orderCount: Number(r.order_count),

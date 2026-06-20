@@ -23,7 +23,8 @@ const DEFAULT_FILTERS: GlobalFilters = {
   dateFrom: DEFAULT_FROM,
   dateTo: DEFAULT_TO,
   customerState: "",
-  paymentType: "",
+  orderStatus: "",
+  category: "",
 };
 
 // ─── Interface del contexto ─────────────────────────────────────────────────
@@ -33,7 +34,8 @@ interface FilterContextValue {
   setDateFrom: (value: string) => void;
   setDateTo: (value: string) => void;
   setCustomerState: (value: string) => void;
-  setPaymentType: (value: string) => void;
+  setOrderStatus: (value: string) => void;
+  setCategory: (value: string) => void;
   resetFilters: () => void;
   toQueryParams: FilterParams;
 }
@@ -59,8 +61,12 @@ export function FilterProvider({ children }: { children: ReactNode }) {
     setFilters((prev) => ({ ...prev, customerState: value }));
   }, []);
 
-  const setPaymentType = useCallback((value: string) => {
-    setFilters((prev) => ({ ...prev, paymentType: value }));
+  const setOrderStatus = useCallback((value: string) => {
+    setFilters((prev) => ({ ...prev, orderStatus: value }));
+  }, []);
+
+  const setCategory = useCallback((value: string) => {
+    setFilters((prev) => ({ ...prev, category: value }));
   }, []);
 
   const resetFilters = useCallback(() => {
@@ -72,7 +78,8 @@ export function FilterProvider({ children }: { children: ReactNode }) {
       from: filters.dateFrom || undefined,
       to: filters.dateTo || undefined,
       customer_state: filters.customerState || undefined,
-      payment_type: filters.paymentType || undefined,
+      order_status: filters.orderStatus || undefined,
+      category: filters.category || undefined,
     }),
     [filters],
   );
@@ -83,11 +90,12 @@ export function FilterProvider({ children }: { children: ReactNode }) {
       setDateFrom,
       setDateTo,
       setCustomerState,
-      setPaymentType,
+      setOrderStatus,
+      setCategory,
       resetFilters,
       toQueryParams,
     }),
-    [filters, setDateFrom, setDateTo, setCustomerState, setPaymentType, resetFilters, toQueryParams],
+    [filters, setDateFrom, setDateTo, setCustomerState, setOrderStatus, setCategory, resetFilters, toQueryParams],
   );
 
   return <FilterContext.Provider value={value}>{children}</FilterContext.Provider>;

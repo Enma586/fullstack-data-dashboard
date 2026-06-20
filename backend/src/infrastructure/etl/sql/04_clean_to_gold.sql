@@ -12,6 +12,13 @@
 -- =============================================================================
 
 -- 1. Dimensión: dim_customer (clientes)
+DROP TABLE IF EXISTS gold.dim_customer CASCADE;
+CREATE TABLE gold.dim_customer (
+    customer_sk  SERIAL PRIMARY KEY,
+    customer_id  VARCHAR(50) UNIQUE NOT NULL,
+    customer_city VARCHAR(100),
+    customer_state CHAR(2)
+);
 TRUNCATE TABLE gold.dim_customer CASCADE;
 INSERT INTO gold.dim_customer (customer_id, customer_city, customer_state)
 SELECT DISTINCT
@@ -21,6 +28,13 @@ SELECT DISTINCT
 FROM clean.customers c;
 
 -- 2. Dimensión: dim_product (productos con traducción de categoría)
+DROP TABLE IF EXISTS gold.dim_product CASCADE;
+CREATE TABLE gold.dim_product (
+    product_sk                    SERIAL PRIMARY KEY,
+    product_id                    VARCHAR(50) UNIQUE NOT NULL,
+    product_category_name         VARCHAR(100),
+    product_category_name_english VARCHAR(100)
+);
 TRUNCATE TABLE gold.dim_product CASCADE;
 INSERT INTO gold.dim_product (product_id, product_category_name, product_category_name_english)
 SELECT DISTINCT
@@ -32,6 +46,13 @@ LEFT JOIN clean.product_category_name_translation t
     ON p.product_category_name = t.product_category_name;
 
 -- 3. Dimensión: dim_seller (vendedores)
+DROP TABLE IF EXISTS gold.dim_seller CASCADE;
+CREATE TABLE gold.dim_seller (
+    seller_sk    SERIAL PRIMARY KEY,
+    seller_id    VARCHAR(50) UNIQUE NOT NULL,
+    seller_city  VARCHAR(100),
+    seller_state CHAR(2)
+);
 TRUNCATE TABLE gold.dim_seller CASCADE;
 INSERT INTO gold.dim_seller (seller_id, seller_city, seller_state)
 SELECT DISTINCT
@@ -41,6 +62,16 @@ SELECT DISTINCT
 FROM clean.sellers s;
 
 -- 4. Dimensión: dim_date (fechas derivadas del timestamp de compra)
+DROP TABLE IF EXISTS gold.dim_date CASCADE;
+CREATE TABLE gold.dim_date (
+    date_sk    SERIAL PRIMARY KEY,
+    full_date  DATE UNIQUE NOT NULL,
+    year       INT,
+    month      INT,
+    day        INT,
+    week       INT,
+    quarter    INT
+);
 TRUNCATE TABLE gold.dim_date CASCADE;
 INSERT INTO gold.dim_date (full_date, year, month, day, week, quarter)
 SELECT DISTINCT
@@ -55,6 +86,27 @@ WHERE o.order_purchase_timestamp IS NOT NULL;
 
 -- 5. Tabla de hechos: fact_sales
 --    Se calcula el pago proporcional por ítem.
+DROP TABLE IF EXISTS gold.fact_sales CASCADE;
+CREATE TABLE gold.fact_sales (
+    fact_sk                       SERIAL PRIMARY KEY,
+    order_id                      VARCHAR(50) NOT NULL,
+    order_item_id                 INT NOT NULL,
+    customer_sk                   INT REFERENCES gold.dim_customer(customer_sk),
+    product_sk                    INT REFERENCES gold.dim_product(product_sk),
+    seller_sk                     INT REFERENCES gold.dim_seller(seller_sk),
+    order_purchase_date           DATE,
+    order_status                  VARCHAR(20),
+    price                         NUMERIC(10,2),
+    freight_value                 NUMERIC(10,2),
+    payment_value_allocated       NUMERIC(10,2),
+    payment_type                  VARCHAR(20),
+    payment_installments          INT,
+    review_score                  INT,
+    order_purchase_timestamp      TIMESTAMP,
+    order_approved_at             TIMESTAMP,
+    order_delivered_customer_date TIMESTAMP,
+    order_estimated_delivery_date TIMESTAMP
+);
 TRUNCATE TABLE gold.fact_sales;
 
 WITH order_prices AS (

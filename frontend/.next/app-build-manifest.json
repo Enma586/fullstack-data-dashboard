@@ -5,6 +5,23 @@
       "static/chunks/main-app.js",
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
+    ],
+    "/(overview)/error": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(overview)/error.js"
+    ],
+    "/(overview)/loading": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(overview)/loading.css",
+      "static/chunks/app/(overview)/loading.js"
+    ],
+    "/(overview)/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(overview)/page.css",
+      "static/chunks/app/(overview)/page.js"
     ]
   }
 }
