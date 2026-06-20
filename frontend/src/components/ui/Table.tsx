@@ -5,7 +5,7 @@ export interface Column<T> {
   key: string;
   label: string;
   sortable?: boolean;
-  render?: (item: T) => ReactNode;
+  render?: (item: T, index: number) => ReactNode;
   align?: "left" | "right" | "center";
 }
 
@@ -83,7 +83,7 @@ export function Table<T extends Record<string, unknown>>({
                     className={styles.bodyCell}
                     style={{ textAlign: col.align ?? "left" }}
                   >
-                    {col.render ? col.render(row) : String(row[col.key] ?? "")}
+                    {col.render ? col.render(row, rowIndex) : String(row[col.key] ?? "")}
                   </td>
                 ))}
               </tr>

@@ -60,9 +60,8 @@ export type RevenueTrendResponse = RevenueTrendItem[];
 export interface ProductRankingItem {
   productId: string;
   productCategory: string;
-  productName?: string;
-  totalValue: number;
-  totalOrders: number;
+  totalSold: number;
+  revenue: number;
 }
 
 export type ProductRankingResponse = ProductRankingItem[];
