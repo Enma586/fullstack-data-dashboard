@@ -4,7 +4,7 @@
 # Define y coordina los tres servicios principales del sistema:
 #   - postgres : Base de datos PostgreSQL 16 (Alpine) para el Data Warehouse
 #   - backend  : API Express con Node.js 20 (Alpine), ejecuta ETL y servidor
-#   - frontend : Aplicación frontend construida con Vite + React
+#   - frontend : Dashboard construido con Next.js (App Router) + TypeScript
 #
 # Dependencias:
 #   backend  → postgres (espera healthcheck)
