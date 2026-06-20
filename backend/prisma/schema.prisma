@@ -22,10 +22,12 @@ model FactSales {
   customer_sk                   Int?      // # FK hacia dim_customer.
   product_sk                    Int?      // # FK hacia dim_product.
   seller_sk                     Int?      // # FK hacia dim_seller.
+  order_sk                      Int?      // # FK hacia dim_order.
   order_purchase_date           DateTime? @db.Date // # Fecha de compra (sin hora).
   order_status                  String?   // # Estado del pedido (ej. delivered, canceled).
   price                         Decimal?  @db.Decimal(10, 2) // # Precio del ítem.
   freight_value                 Decimal?  @db.Decimal(10, 2) // # Valor del flete.
+  gmv                           Decimal?  @db.Decimal(10, 2) // # Valor bruto de la mercancía (igual al precio).
   payment_value_allocated       Decimal?  @db.Decimal(10, 2) // # Monto del pago prorrateado a este ítem.
   payment_type                  String?   // # Tipo de pago (credit_card, boleto, etc.).
   payment_installments          Int?      // # Número de cuotas del pago.
@@ -34,10 +36,14 @@ model FactSales {
   order_approved_at             DateTime? // # Marca temporal de aprobación del pago.
   order_delivered_customer_date DateTime? // # Marca temporal de entrega al cliente.
   order_estimated_delivery_date DateTime? // # Fecha estimada de entrega.
+  is_delivered                  Boolean?  // # Indica si la orden fue entregada.
+  is_canceled                   Boolean?  // # Indica si la orden fue cancelada.
+  is_on_time                    Boolean?  // # Indica si la entrega fue a tiempo.
 
   customer DimCustomer? @relation(fields: [customer_sk], references: [customer_sk])
   product  DimProduct?  @relation(fields: [product_sk], references: [product_sk])
   seller   DimSeller?   @relation(fields: [seller_sk], references: [seller_sk])
+  order    DimOrder?    @relation(fields: [order_sk], references: [order_sk])
 
   @@schema("gold")
   @@map("fact_sales")
@@ -94,4 +100,24 @@ model DimDate {
 
   @@schema("gold")
   @@map("dim_date")
+}
+
+// # Dimensión de órdenes. Detalles y flags de estado de cada orden.
+model DimOrder {
+  order_sk                      Int       @id @default(autoincrement())
+  order_id                      String    @unique
+  order_status                  String?
+  order_purchase_timestamp      DateTime?
+  order_approved_at             DateTime?
+  order_delivered_carrier_date  DateTime?
+  order_delivered_customer_date DateTime?
+  order_estimated_delivery_date DateTime?
+  is_delivered                  Boolean?
+  is_canceled                   Boolean?
+  is_on_time                    Boolean?
+
+  sales FactSales[]
+
+  @@schema("gold")
+  @@map("dim_order")
 }

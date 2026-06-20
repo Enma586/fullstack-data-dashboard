@@ -10,6 +10,8 @@ export interface FilterParams {
   customer_state?: string;
   order_status?: string;
   category?: string;
+  metric?: "gmv" | "revenue";
+  limit?: number;
 }
 
 export interface TrendFilterParams extends FilterParams {
@@ -36,16 +38,18 @@ export interface CategorySummary {
 }
 
 export interface KpiSummaryResponse {
-  totalRevenue: number;
+  gmv: number;
+  revenue: number;
   totalOrders: number;
   averageOrderValue: number;
+  itemsPerOrder: number;
   cancelledOrders: number;
   cancellationRate: number;
-  totalItems: number;
   onTimeRate: number;
   ordersByState: StateOrderSummary[];
   ordersByPaymentType: PaymentTypeSummary[];
-  topCategories: CategorySummary[];
+  topProductsByGmv: ProductRankingEntry[];
+  topProductsByRevenue: ProductRankingEntry[];
 }
 
 // ─── Revenue Trend (GET /trend/revenue) ─────────────────────────────────────
@@ -58,12 +62,23 @@ export interface RevenueTrendItem {
 
 export type RevenueTrendResponse = RevenueTrendItem[];
 
-// ─── Top Products (futuro: GET /top-products) ───────────────────────────────
+// ─── Product Ranking Entry (anidado en /kpis) ───────────────────────────────
+
+export interface ProductRankingEntry {
+  productId: string;
+  productCategory: string;
+  totalSold: number;
+  gmv: number;
+  revenue: number;
+}
+
+// ─── Top Products (GET /rankings/products) ──────────────────────────────────
 
 export interface ProductRankingItem {
   productId: string;
   productCategory: string;
   totalSold: number;
+  gmv: number;
   revenue: number;
 }
 

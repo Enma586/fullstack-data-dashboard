@@ -84,7 +84,47 @@ SELECT DISTINCT
 FROM clean.orders o
 WHERE o.order_purchase_timestamp IS NOT NULL;
 
--- 5. Tabla de hechos: fact_sales
+-- 5. Dimensión: dim_order (detalles de la orden)
+DROP TABLE IF EXISTS gold.dim_order CASCADE;
+CREATE TABLE gold.dim_order (
+    order_sk                      SERIAL PRIMARY KEY,
+    order_id                      VARCHAR(50) UNIQUE NOT NULL,
+    order_status                  VARCHAR(20),
+    order_purchase_timestamp      TIMESTAMP,
+    order_approved_at             TIMESTAMP,
+    order_delivered_carrier_date  TIMESTAMP,
+    order_delivered_customer_date TIMESTAMP,
+    order_estimated_delivery_date TIMESTAMP,
+    is_delivered                  BOOLEAN DEFAULT FALSE,
+    is_canceled                   BOOLEAN DEFAULT FALSE,
+    is_on_time                    BOOLEAN DEFAULT FALSE
+);
+TRUNCATE TABLE gold.dim_order CASCADE;
+INSERT INTO gold.dim_order (
+    order_id, order_status, order_purchase_timestamp, order_approved_at,
+    order_delivered_carrier_date, order_delivered_customer_date,
+    order_estimated_delivery_date, is_delivered, is_canceled, is_on_time
+)
+SELECT
+    order_id,
+    order_status,
+    order_purchase_timestamp,
+    order_approved_at,
+    order_delivered_carrier_date,
+    order_delivered_customer_date,
+    order_estimated_delivery_date,
+    order_status = 'delivered' AS is_delivered,
+    order_status = 'canceled' AS is_canceled,
+    CASE
+        WHEN order_status = 'delivered'
+             AND order_delivered_customer_date IS NOT NULL
+             AND order_estimated_delivery_date IS NOT NULL
+             AND order_delivered_customer_date <= order_estimated_delivery_date
+        THEN TRUE ELSE FALSE
+    END AS is_on_time
+FROM clean.orders;
+
+-- 6. Tabla de hechos: fact_sales
 --    Se calcula el pago proporcional por ítem.
 DROP TABLE IF EXISTS gold.fact_sales CASCADE;
 CREATE TABLE gold.fact_sales (
@@ -94,10 +134,12 @@ CREATE TABLE gold.fact_sales (
     customer_sk                   INT REFERENCES gold.dim_customer(customer_sk),
     product_sk                    INT REFERENCES gold.dim_product(product_sk),
     seller_sk                     INT REFERENCES gold.dim_seller(seller_sk),
+    order_sk                      INT REFERENCES gold.dim_order(order_sk),
     order_purchase_date           DATE,
     order_status                  VARCHAR(20),
     price                         NUMERIC(10,2),
     freight_value                 NUMERIC(10,2),
+    gmv                           NUMERIC(10,2),
     payment_value_allocated       NUMERIC(10,2),
     payment_type                  VARCHAR(20),
     payment_installments          INT,
@@ -105,7 +147,10 @@ CREATE TABLE gold.fact_sales (
     order_purchase_timestamp      TIMESTAMP,
     order_approved_at             TIMESTAMP,
     order_delivered_customer_date TIMESTAMP,
-    order_estimated_delivery_date TIMESTAMP
+    order_estimated_delivery_date TIMESTAMP,
+    is_delivered                  BOOLEAN DEFAULT FALSE,
+    is_canceled                   BOOLEAN DEFAULT FALSE,
+    is_on_time                    BOOLEAN DEFAULT FALSE
 );
 TRUNCATE TABLE gold.fact_sales;
 
@@ -138,23 +183,11 @@ order_reviews_agg AS (
     GROUP BY order_id
 )
 INSERT INTO gold.fact_sales (
-    order_id,
-    order_item_id,
-    customer_sk,
-    product_sk,
-    seller_sk,
-    order_purchase_date,
-    order_status,
-    price,
-    freight_value,
-    payment_value_allocated,
-    payment_type,
-    payment_installments,
-    review_score,
-    order_purchase_timestamp,
-    order_approved_at,
-    order_delivered_customer_date,
-    order_estimated_delivery_date
+    order_id, order_item_id, customer_sk, product_sk, seller_sk, order_sk,
+    order_purchase_date, order_status, price, freight_value, gmv,
+    payment_value_allocated, payment_type, payment_installments, review_score,
+    order_purchase_timestamp, order_approved_at, order_delivered_customer_date,
+    order_estimated_delivery_date, is_delivered, is_canceled, is_on_time
 )
 SELECT
     o.order_id,
@@ -162,11 +195,12 @@ SELECT
     dc.customer_sk,
     dp.product_sk,
     ds.seller_sk,
+    dor.order_sk,
     o.order_purchase_timestamp::DATE,
     o.order_status,
     oi.price,
     oi.freight_value,
-    -- Pago proporcional: (precio_ítem / total_orden) * total_pagado_orden
+    oi.price AS gmv,
     ROUND(
         (oi.price / NULLIF(op.total_order_price, 0)) * opa.total_payment,
         2
@@ -177,22 +211,19 @@ SELECT
     o.order_purchase_timestamp,
     o.order_approved_at,
     o.order_delivered_customer_date,
-    o.order_estimated_delivery_date
+    o.order_estimated_delivery_date,
+    dor.is_delivered,
+    dor.is_canceled,
+    dor.is_on_time
 FROM clean.orders o
-JOIN clean.order_items oi
-    ON o.order_id = oi.order_id
-JOIN order_prices op
-    ON o.order_id = op.order_id
-LEFT JOIN order_payments_agg opa
-    ON o.order_id = opa.order_id
-LEFT JOIN order_reviews_agg ora
-    ON o.order_id = ora.order_id
-LEFT JOIN gold.dim_customer dc
-    ON o.customer_id = dc.customer_id
-LEFT JOIN gold.dim_product dp
-    ON oi.product_id = dp.product_id
-LEFT JOIN gold.dim_seller ds
-    ON oi.seller_id = ds.seller_id;
+JOIN clean.order_items oi ON o.order_id = oi.order_id
+JOIN order_prices op ON o.order_id = op.order_id
+LEFT JOIN order_payments_agg opa ON o.order_id = opa.order_id
+LEFT JOIN order_reviews_agg ora ON o.order_id = ora.order_id
+LEFT JOIN gold.dim_customer dc ON o.customer_id = dc.customer_id
+LEFT JOIN gold.dim_product dp ON oi.product_id = dp.product_id
+LEFT JOIN gold.dim_seller ds ON oi.seller_id = ds.seller_id
+LEFT JOIN gold.dim_order dor ON o.order_id = dor.order_id;
 
 -- Índices para rendimiento en consultas analíticas
 CREATE INDEX IF NOT EXISTS idx_fact_sales_order_date   ON gold.fact_sales(order_purchase_date);

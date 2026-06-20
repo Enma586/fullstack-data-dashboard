@@ -1,26 +1,11 @@
-/**
- * Controlador del endpoint de ranking de productos.
- * Responde a GET /top-products con el ranking de productos más vendidos.
- */
-
 import { Request, Response, NextFunction } from 'express';
 import { GetTopProducts } from '../../../application/GetTopProducts';
 import { FilterParamsDto } from '../dtos/FilterParamsDto';
 
 export class ProductsController {
-  /**
-   * @param getTopProducts - Caso de uso para obtener el ranking de productos.
-   */
   constructor(private readonly getTopProducts: GetTopProducts) {}
 
-  /**
-   * Obtiene el ranking de productos más vendidos aplicando los filtros recibidos.
-   *
-   * @param req  - Request de Express con los query params (`from`, `to`, `customer_state`, `payment_type`, `limit`).
-   * @param res  - Response de Express.
-   * @param next - Función para pasar el error al manejador centralizado.
-   */
-  async getTop(
+  async getRanking(
     req: Request,
     res: Response,
     next: NextFunction,
@@ -28,6 +13,7 @@ export class ProductsController {
     try {
       const dto: FilterParamsDto = req.app.locals.dto;
       const rawLimit = req.query.limit as string | undefined;
+      const rawMetric = req.query.metric as string | undefined;
 
       let limit: number | undefined;
       if (rawLimit !== undefined) {
@@ -40,9 +26,21 @@ export class ProductsController {
         }
       }
 
+      let metric: 'gmv' | 'revenue' | undefined;
+      if (rawMetric !== undefined) {
+        if (rawMetric !== 'gmv' && rawMetric !== 'revenue') {
+          res.status(400).json({
+            error: 'Parametro invalido: metric debe ser "gmv" o "revenue"',
+          });
+          return;
+        }
+        metric = rawMetric;
+      }
+
       const ranking = await this.getTopProducts.execute({
         ...dto.toFilters(),
         limit,
+        metric,
       });
 
       res.json(ranking);

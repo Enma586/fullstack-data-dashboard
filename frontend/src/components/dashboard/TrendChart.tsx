@@ -6,8 +6,8 @@ import type { RevenueTrendItem } from "@/types";
 import styles from "./TrendChart.module.css";
 
 const CHART_WIDTH = 800;
-const CHART_HEIGHT = 300;
-const PADDING = { top: 20, right: 20, bottom: 40, left: 60 };
+const CHART_HEIGHT = 320;
+const PADDING = { top: 24, right: 24, bottom: 48, left: 64 };
 const PLOT_WIDTH = CHART_WIDTH - PADDING.left - PADDING.right;
 const PLOT_HEIGHT = CHART_HEIGHT - PADDING.top - PADDING.bottom;
 
@@ -67,29 +67,31 @@ export function TrendChart({ data }: TrendChartProps) {
       };
     }, [data]);
 
-  const yTicks = useMemo(() => {
+  const yTicksRevenue = useMemo(() => {
     const ticks: number[] = [];
-    const steps = 5;
+    const steps = 4;
     for (let i = 0; i <= steps; i++) {
-      ticks.push((yMaxRevenue / steps) * i);
+      ticks.push(Math.round((yMaxRevenue / steps) * i));
     }
     return ticks;
   }, [yMaxRevenue]);
 
   const xLabels = useMemo(() => {
     if (data.length <= 1) return [];
-    const maxLabels = Math.min(data.length, 8);
-    const step = Math.floor(data.length / (maxLabels - 1));
+    const maxLabels = 6;
+    const step = Math.max(1, Math.floor((data.length - 1) / (maxLabels - 1)));
     const indices: number[] = [];
     for (let i = 0; i < data.length; i += step) {
-      indices.push(i);
+      if (indices.length < maxLabels) {
+        indices.push(i);
+      }
     }
     if (indices[indices.length - 1] !== data.length - 1) {
       indices.push(data.length - 1);
     }
     return indices.map((i) => ({
       index: i,
-      label: data[i].period.slice(0, 7),
+      label: data[i].period.slice(0, 4),
       x: xScale(i),
     }));
   }, [data, xScale]);
@@ -132,7 +134,7 @@ export function TrendChart({ data }: TrendChartProps) {
   }
 
   return (
-    <Card title="Tendencia">
+    <Card title="Tendencia (Revenue y Pedidos)">
       <div className={styles.wrapper}>
         <div className={styles.chartContainer}>
           <svg
@@ -141,8 +143,7 @@ export function TrendChart({ data }: TrendChartProps) {
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
           >
-            {/* Eje Y (grid y labels) */}
-            {yTicks.map((v) => {
+            {yTicksRevenue.map((v) => {
               const y = PADDING.top + PLOT_HEIGHT - (v / yMaxRevenue) * PLOT_HEIGHT;
               return (
                 <g key={v}>
@@ -167,21 +168,20 @@ export function TrendChart({ data }: TrendChartProps) {
               );
             })}
 
-            {/* Eje X (labels) */}
-            {xLabels.map(({ label, x, index }) => (
+            {xLabels.map(({ label, x }) => (
               <text
-                key={index}
+                key={`${x}-${label}`}
                 x={x}
                 y={CHART_HEIGHT - PADDING.bottom + 20}
                 textAnchor="middle"
                 fill="var(--color-text-muted)"
-                fontSize={11}
+                fontSize={12}
+                fontWeight={600}
               >
                 {label}
               </text>
             ))}
 
-            {/* Línea de Revenue */}
             <polyline
               points={lineRevenue}
               fill="none"
@@ -191,7 +191,6 @@ export function TrendChart({ data }: TrendChartProps) {
               strokeLinejoin="round"
             />
 
-            {/* Línea de Orders */}
             <polyline
               points={lineOrders}
               fill="none"
@@ -201,9 +200,17 @@ export function TrendChart({ data }: TrendChartProps) {
               strokeLinejoin="round"
             />
 
-            {/* Tooltip */}
             {tooltip && (
               <g>
+                <line
+                  x1={tooltip.x}
+                  y1={PADDING.top}
+                  x2={tooltip.x}
+                  y2={PADDING.top + PLOT_HEIGHT}
+                  stroke="var(--color-text-muted)"
+                  strokeWidth={1}
+                  strokeDasharray="4 2"
+                />
                 <circle
                   cx={tooltip.x}
                   cy={tooltip.y}
@@ -214,9 +221,9 @@ export function TrendChart({ data }: TrendChartProps) {
                 />
                 <rect
                   x={Math.min(tooltip.x + 12, CHART_WIDTH - 180)}
-                  y={Math.max(tooltip.y - 40, 0)}
+                  y={Math.max(tooltip.y - 36, 4)}
                   width={170}
-                  height={50}
+                  height={52}
                   rx={6}
                   fill="var(--color-bg-elevated)"
                   stroke="var(--color-border)"
@@ -224,7 +231,7 @@ export function TrendChart({ data }: TrendChartProps) {
                 />
                 <text
                   x={Math.min(tooltip.x + 20, CHART_WIDTH - 172)}
-                  y={Math.max(tooltip.y - 22, 6)}
+                  y={Math.max(tooltip.y - 18, 10)}
                   fill="var(--color-text-primary)"
                   fontSize={11}
                   fontWeight={600}
@@ -233,7 +240,7 @@ export function TrendChart({ data }: TrendChartProps) {
                 </text>
                 <text
                   x={Math.min(tooltip.x + 20, CHART_WIDTH - 172)}
-                  y={Math.max(tooltip.y - 6, 18)}
+                  y={Math.max(tooltip.y - 3, 24)}
                   fill="var(--color-primary-400)"
                   fontSize={11}
                 >
@@ -241,7 +248,7 @@ export function TrendChart({ data }: TrendChartProps) {
                 </text>
                 <text
                   x={Math.min(tooltip.x + 20, CHART_WIDTH - 172)}
-                  y={Math.max(tooltip.y + 8, 32)}
+                  y={Math.max(tooltip.y + 11, 38)}
                   fill="var(--color-secondary-400)"
                   fontSize={11}
                 >

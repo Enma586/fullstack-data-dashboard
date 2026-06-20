@@ -5,17 +5,12 @@ import {
   TopProductFilters,
 } from '../../src/domain/ports/IKpiRepository';
 
-/**
- * Repositorio mock que retorna un ranking de productos fijo.
- * Implementa IKpiRepository y solo define getTopProducts;
- * los demás métodos lanzan error.
- */
 class MockProductRepository implements IKpiRepository {
   async getTopProducts(_filters: TopProductFilters): Promise<ProductRanking[]> {
     return [
-      new ProductRanking('PROD-1', 'Electronics', 150, 75000),
-      new ProductRanking('PROD-2', 'Fashion', 200, 45000),
-      new ProductRanking('PROD-3', 'Home', 80, 30000),
+      new ProductRanking('PROD-1', 'Electronics', 150, 75000, 60000),
+      new ProductRanking('PROD-2', 'Fashion', 200, 45000, 35000),
+      new ProductRanking('PROD-3', 'Home', 80, 30000, 25000),
     ];
   }
 
@@ -37,8 +32,7 @@ describe('GetTopProducts', () => {
     useCase = new GetTopProducts(repository);
   });
 
-  /** Debe retornar un arreglo con 3 productos ordenados por revenue */
-  it('debe retornar un ranking de productos ordenado por revenue', async () => {
+  it('debe retornar un ranking de productos con gmv y revenue', async () => {
     const result = await useCase.execute({});
 
     expect(result).toHaveLength(3);
@@ -47,10 +41,10 @@ describe('GetTopProducts', () => {
     expect(result[0].productId).toBe('PROD-1');
     expect(result[0].productCategory).toBe('Electronics');
     expect(result[0].totalSold).toBe(150);
-    expect(result[0].revenue).toBe(75000);
+    expect(result[0].gmv).toBe(75000);
+    expect(result[0].revenue).toBe(60000);
   });
 
-  /** Sin limit explícito debe pasar un objeto vacío al repositorio */
   it('debe pasar el limit por defecto cuando no se especifica', async () => {
     const spy = jest.spyOn(repository, 'getTopProducts');
 
@@ -59,12 +53,12 @@ describe('GetTopProducts', () => {
     expect(spy).toHaveBeenCalledWith({});
   });
 
-  /** Los filtros con limit personalizado deben propagarse al repositorio */
-  it('debe pasar el limit personalizado al repositorio', async () => {
+  it('debe pasar el limit y metric personalizados al repositorio', async () => {
     const spy = jest.spyOn(repository, 'getTopProducts');
 
     const filters: TopProductFilters = {
       limit: 5,
+      metric: 'gmv',
       customerState: 'MG',
     };
 

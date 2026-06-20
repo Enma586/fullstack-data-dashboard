@@ -2,22 +2,25 @@ import { GetKpis } from '../../src/application/GetKpis';
 import { KpiSummary } from '../../src/domain/entities/KpiSummary';
 import { IKpiRepository, KpiFilters } from '../../src/domain/ports/IKpiRepository';
 
-/**
- * Repositorio mock que retorna valores fijos para el caso de uso GetKpis.
- * Implementa IKpiRepository y solo define getKpis; los demás métodos
- * lanzan error para indicar que no están implementados.
- */
 class MockKpiRepository implements IKpiRepository {
   async getKpis(_filters: KpiFilters): Promise<KpiSummary> {
     return new KpiSummary(
+      120000,
       100000,
       500,
       200,
+      2.5,
       10,
       0.02,
+      0.91,
       [{ state: 'SP', orderCount: 200 }],
       [{ paymentType: 'credit_card', orderCount: 300, revenue: 80000 }],
-      [{ category: 'Electronics', orderCount: 100, revenue: 40000 }],
+      [
+        { productId: 'PROD-1', productCategory: 'Electronics', totalSold: 100, gmv: 50000, revenue: 40000 },
+      ],
+      [
+        { productId: 'PROD-2', productCategory: 'Fashion', totalSold: 80, gmv: 30000, revenue: 25000 },
+      ],
     );
   }
 
@@ -39,19 +42,20 @@ describe('GetKpis', () => {
     useCase = new GetKpis(repository);
   });
 
-  /** Debe retornar un KpiSummary con todos los valores numéricos esperados */
   it('debe retornar un resumen de KPIs con valores numericos correctos', async () => {
     const result = await useCase.execute({});
 
     expect(result).toBeInstanceOf(KpiSummary);
-    expect(result.totalRevenue).toBe(100000);
+    expect(result.gmv).toBe(120000);
+    expect(result.revenue).toBe(100000);
     expect(result.totalOrders).toBe(500);
     expect(result.averageOrderValue).toBe(200);
+    expect(result.itemsPerOrder).toBe(2.5);
     expect(result.cancelledOrders).toBe(10);
     expect(result.cancellationRate).toBe(0.02);
+    expect(result.onTimeRate).toBe(0.91);
   });
 
-  /** Los desgloses por estado y tipo de pago deben coincidir con el mock */
   it('debe retornar desgloses por estado y tipo de pago', async () => {
     const result = await useCase.execute({});
 
@@ -64,16 +68,18 @@ describe('GetKpis', () => {
     expect(result.ordersByPaymentType[0].revenue).toBe(80000);
   });
 
-  /** Las categorías principales deben incluir los datos del mock */
-  it('debe retornar categorias principales', async () => {
+  it('debe retornar rankings de productos por GMV y Revenue', async () => {
     const result = await useCase.execute({});
 
-    expect(result.topCategories).toHaveLength(1);
-    expect(result.topCategories[0].category).toBe('Electronics');
-    expect(result.topCategories[0].revenue).toBe(40000);
+    expect(result.topProductsByGmv).toHaveLength(1);
+    expect(result.topProductsByGmv[0].productId).toBe('PROD-1');
+    expect(result.topProductsByGmv[0].gmv).toBe(50000);
+
+    expect(result.topProductsByRevenue).toHaveLength(1);
+    expect(result.topProductsByRevenue[0].productId).toBe('PROD-2');
+    expect(result.topProductsByRevenue[0].revenue).toBe(25000);
   });
 
-  /** Los filtros recibidos deben propagarse al repositorio */
   it('debe pasar los filtros al repositorio', async () => {
     const spy = jest.spyOn(repository, 'getKpis');
 

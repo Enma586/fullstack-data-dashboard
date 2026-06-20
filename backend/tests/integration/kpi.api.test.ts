@@ -7,9 +7,11 @@ import { GetTopProducts } from '../../src/application/GetTopProducts';
 import { KpiController } from '../../src/adapters/http/controllers/KpiController';
 import { TrendController } from '../../src/adapters/http/controllers/TrendController';
 import { HealthController } from '../../src/adapters/http/controllers/HealthController';
+import { ProductsController } from '../../src/adapters/http/controllers/ProductsController';
 import { createHealthRouter } from '../../src/adapters/http/routes/health.routes';
 import { createKpiRouter } from '../../src/adapters/http/routes/kpi.routes';
 import { createTrendRouter } from '../../src/adapters/http/routes/trend.routes';
+import { createProductsRouter } from '../../src/adapters/http/routes/products.routes';
 import { KpiSummary } from '../../src/domain/entities/KpiSummary';
 import { RevenueTrend } from '../../src/domain/entities/RevenueTrend';
 import { ProductRanking } from '../../src/domain/entities/ProductRanking';
@@ -20,18 +22,17 @@ import {
   TopProductFilters,
 } from '../../src/domain/ports/IKpiRepository';
 
-/**
- * Repositorio mock completo para pruebas de integración.
- * Implementa todos los métodos de IKpiRepository con datos fijos.
- */
 class MockRepository implements IKpiRepository {
   async getKpis(_filters: KpiFilters): Promise<KpiSummary> {
     return new KpiSummary(
+      120000,
       100000,
       500,
       200,
+      2.5,
       10,
       0.02,
+      0.91,
       [
         { state: 'SP', orderCount: 200 },
         { state: 'RJ', orderCount: 150 },
@@ -41,8 +42,10 @@ class MockRepository implements IKpiRepository {
         { paymentType: 'boleto', orderCount: 150, revenue: 15000 },
       ],
       [
-        { category: 'Electronics', orderCount: 100, revenue: 40000 },
-        { category: 'Fashion', orderCount: 80, revenue: 25000 },
+        { productId: 'PROD-1', productCategory: 'Electronics', totalSold: 100, gmv: 50000, revenue: 40000 },
+      ],
+      [
+        { productId: 'PROD-2', productCategory: 'Fashion', totalSold: 80, gmv: 30000, revenue: 25000 },
       ],
     );
   }
@@ -61,18 +64,14 @@ class MockRepository implements IKpiRepository {
     return baseData;
   }
 
-  async getTopProducts(_filters: TopProductFilters): Promise<ProductRanking[]> {
+  async getTopProducts(filters: TopProductFilters): Promise<ProductRanking[]> {
     return [
-      new ProductRanking('PROD-1', 'Electronics', 150, 75000),
-      new ProductRanking('PROD-2', 'Fashion', 200, 45000),
+      new ProductRanking('PROD-1', 'Electronics', 150, 75000, 60000),
+      new ProductRanking('PROD-2', 'Fashion', 200, 45000, 35000),
     ];
   }
 }
 
-/**
- * Construye una aplicación Express de prueba con los routers y el
- * manejador de errores, usando el MockRepository como respaldo.
- */
 function createTestApp(): express.Application {
   const app = express();
   app.use(express.json());
@@ -85,10 +84,12 @@ function createTestApp(): express.Application {
   const healthController = new HealthController();
   const kpiController = new KpiController(getKpis);
   const trendController = new TrendController(getRevenueTrend);
+  const productsController = new ProductsController(getTopProducts);
 
   app.use(createHealthRouter(healthController));
   app.use(createKpiRouter(kpiController));
   app.use(createTrendRouter(trendController));
+  app.use(createProductsRouter(productsController));
   app.use(errorHandler);
 
   return app;
@@ -102,7 +103,6 @@ describe('API de KPIs (Integracion)', () => {
   });
 
   describe('GET /health', () => {
-    /** El endpoint de salud debe responder 200 con status "ok" y timestamp */
     it('debe retornar 200 con status ok', async () => {
       const res = await request(app).get('/health');
 
@@ -113,21 +113,23 @@ describe('API de KPIs (Integracion)', () => {
   });
 
   describe('GET /kpis', () => {
-    /** La respuesta debe incluir todos los campos del KpiSummary */
     it('debe retornar 200 con estructura completa de KPIs', async () => {
       const res = await request(app).get('/kpis');
 
       expect(res.status).toBe(200);
-      expect(res.body).toHaveProperty('totalRevenue', 100000);
+      expect(res.body).toHaveProperty('gmv', 120000);
+      expect(res.body).toHaveProperty('revenue', 100000);
       expect(res.body).toHaveProperty('totalOrders', 500);
-      expect(res.body).toHaveProperty('averageOrderValue');
+      expect(res.body).toHaveProperty('averageOrderValue', 200);
+      expect(res.body).toHaveProperty('itemsPerOrder', 2.5);
       expect(res.body).toHaveProperty('cancellationRate', 0.02);
+      expect(res.body).toHaveProperty('onTimeRate', 0.91);
       expect(res.body.ordersByState).toHaveLength(2);
       expect(res.body.ordersByPaymentType).toHaveLength(2);
-      expect(res.body.topCategories).toHaveLength(2);
+      expect(res.body.topProductsByGmv).toHaveLength(1);
+      expect(res.body.topProductsByRevenue).toHaveLength(1);
     });
 
-    /** Los filtros opcionales en query string no deben romper la respuesta */
     it('debe aceptar filtros opcionales en query string', async () => {
       const res = await request(app).get(
         '/kpis?from=2020-01-01&to=2020-03-01&customer_state=SP&payment_type=credit_card',
@@ -136,7 +138,6 @@ describe('API de KPIs (Integracion)', () => {
       expect(res.status).toBe(200);
     });
 
-    /** customer_state inválido debe devolver 400 */
     it('debe retornar 400 cuando customer_state es invalido', async () => {
       const res = await request(app).get('/kpis?customer_state=INVALIDO');
 
@@ -144,7 +145,6 @@ describe('API de KPIs (Integracion)', () => {
       expect(res.body).toHaveProperty('error');
     });
 
-    /** payment_type inválido debe devolver 400 */
     it('debe retornar 400 cuando payment_type es invalido', async () => {
       const res = await request(app).get('/kpis?payment_type=invalid');
 
@@ -152,7 +152,6 @@ describe('API de KPIs (Integracion)', () => {
       expect(res.body).toHaveProperty('error');
     });
 
-    /** Una fecha inválida en from debe devolver 400 */
     it('debe retornar 400 cuando from no es una fecha valida', async () => {
       const res = await request(app).get('/kpis?from=no-es-fecha');
 
@@ -162,7 +161,6 @@ describe('API de KPIs (Integracion)', () => {
   });
 
   describe('GET /trend/revenue', () => {
-    /** Sin parámetros debe retornar tendencia diaria */
     it('debe retornar 200 con tendencia diaria por defecto', async () => {
       const res = await request(app).get('/trend/revenue');
 
@@ -173,7 +171,6 @@ describe('API de KPIs (Integracion)', () => {
       expect(res.body[0]).toHaveProperty('orderCount');
     });
 
-    /** grain=week debe cambiar la agrupación a semanal */
     it('debe retornar tendencia semanal cuando grain=week', async () => {
       const res = await request(app).get('/trend/revenue?grain=week');
 
@@ -181,7 +178,6 @@ describe('API de KPIs (Integracion)', () => {
       expect(res.body[0].period).toBeDefined();
     });
 
-    /** Un valor inválido para grain debe devolver 400 */
     it('debe retornar 400 cuando grain es invalido', async () => {
       const res = await request(app).get('/trend/revenue?grain=month');
 
@@ -189,13 +185,44 @@ describe('API de KPIs (Integracion)', () => {
       expect(res.body).toHaveProperty('error');
     });
 
-    /** Todos los filtros combinados deben funcionar juntos */
     it('debe retornar 200 con todos los filtros combinados', async () => {
       const res = await request(app).get(
         '/trend/revenue?grain=day&from=2020-01-01&to=2020-02-01&customer_state=SP&payment_type=credit_card',
       );
 
       expect(res.status).toBe(200);
+    });
+  });
+
+  describe('GET /rankings/products', () => {
+    it('debe retornar 200 con ranking de productos', async () => {
+      const res = await request(app).get('/rankings/products');
+
+      expect(res.status).toBe(200);
+      expect(Array.isArray(res.body)).toBe(true);
+      expect(res.body[0]).toHaveProperty('productId');
+      expect(res.body[0]).toHaveProperty('gmv');
+      expect(res.body[0]).toHaveProperty('revenue');
+    });
+
+    it('debe aceptar el parametro metric=gmv', async () => {
+      const res = await request(app).get('/rankings/products?metric=gmv');
+
+      expect(res.status).toBe(200);
+    });
+
+    it('debe retornar 400 cuando metric es invalido', async () => {
+      const res = await request(app).get('/rankings/products?metric=invalid');
+
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty('error');
+    });
+
+    it('debe retornar 400 cuando limit no es un entero', async () => {
+      const res = await request(app).get('/rankings/products?limit=abc');
+
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty('error');
     });
   });
 });

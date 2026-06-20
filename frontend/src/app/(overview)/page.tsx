@@ -4,17 +4,108 @@ import { useEffect, useState, useCallback } from "react";
 import { useFilters } from "@/context/FilterContext";
 import { apiClient, ApiClientError } from "@/services/apiClient";
 import { GlobalFilters, KpiGrid, TrendChart } from "@/components/dashboard";
-import type { KpiSummaryResponse, RevenueTrendResponse } from "@/types";
+import { Card, Table, type Column } from "@/components/ui";
+import type { KpiSummaryResponse, RevenueTrendResponse, ProductRankingEntry } from "@/types";
 import styles from "./overview.module.css";
+
+type Metric = "gmv" | "revenue";
 
 type OverviewState =
   | { status: "loading" }
   | { status: "error"; message: string }
   | { status: "success"; kpis: KpiSummaryResponse; trend: RevenueTrendResponse };
 
+const CATEGORY_LABELS: Record<string, string> = {
+  bed_bath_table: "Cama, Mesa y Baño",
+  health_beauty: "Salud y Belleza",
+  sports_leisure: "Deportes y Ocio",
+  furniture_decor: "Muebles y Decoración",
+  housewares: "Utensilios Domésticos",
+  watches_gifts: "Relojes y Regalos",
+  telephony: "Telefonía",
+  garden_tools: "Jardín y Herramientas",
+  auto: "Automotriz",
+  toys: "Juguetes",
+  cool_stuff: "Novedades",
+  perfumery: "Perfumería",
+  computers: "Computadoras",
+  informatica_accessories: "Informática y Accesorios",
+  office_furniture: "Muebles de Oficina",
+  stationery: "Papelería",
+  electronics: "Electrónicos",
+  audio: "Audio",
+  cds_dvds_musicals: "CDs, DVDs y Música",
+  music: "Música",
+  dvds_blu_ray: "DVDs y Blu-ray",
+  fixed_telephony: "Telefonía Fija",
+  tablets_printing_image: "Tablets e Impresión",
+  computers_accessories: "Accesorios de Computadora",
+  pc_gamer: "PC Gamer",
+  books_general_interest: "Libros",
+  books_imported: "Libros Importados",
+  christmas_supplies: "Suministros Navideños",
+  agro_industry_and_commerce: "Agroindustria",
+  construction_tools: "Herramientas de Construcción",
+  construction_tools_afety: "Seguridad en Construcción",
+  flowers: "Flores",
+  food_drink: "Alimentos y Bebidas",
+  food: "Alimentos",
+  drinks: "Bebidas",
+  home_comfort: "Confort del Hogar",
+  home_appliances: "Electrodomésticos",
+  home_appliances_2: "Electrodomésticos 2",
+  home_confort: "Confort del Hogar",
+  industry_commerce_and_business: "Industria y Comercio",
+  air_conditioning: "Aire Acondicionado",
+  fashion_childrens_clothes: "Ropa Infantil",
+  fashion_shoes: "Calzado",
+  fashion_sport: "Ropa Deportiva",
+  fashion_underwear_beach: "Ropa Interior y Playa",
+  fashion_male_clothing: "Ropa Masculina",
+  fashion_bags_accessories: "Bolsos y Accesorios",
+  fashion_female_clothing: "Ropa Femenina",
+  fashion: "Moda",
+  small_appliances: "Pequeños Electrodomésticos",
+  small_appliances_home_oven_and_coffee: "Electrodomésticos de Cocina",
+  security_and_services: "Seguridad y Servicios",
+  baby: "Bebé",
+  books_technical: "Libros Técnicos",
+  cine_photo: "Cámaras y Fotografía",
+  market_place: "Market Place",
+  party_supplies: "Suministros para Fiestas",
+  beach_toy: "Juguetes de Playa",
+  costruction_tools: "Herramientas de Construcción",
+  drivers: "Conductores",
+  fashion_handbags: "Bolsos",
+  grooming: "Cuidado Personal",
+  hygiene: "Higiene",
+  kitchen: "Cocina",
+  la_cuisine: "Cocina",
+  luggage_accessories: "Maletas y Accesorios",
+  musical_instruments: "Instrumentos Musicales",
+  office: "Oficina",
+  other: "Otros",
+  padaria: "Panadería",
+  portateis: "Portátiles",
+  portable: "Portátiles",
+  home_appliance: "Electrodomésticos",
+};
+
+function formatCurrency(value: number): string {
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(value);
+}
+
+function formatNumber(value: number): string {
+  return new Intl.NumberFormat("pt-BR").format(value);
+}
+
 export default function OverviewPage() {
   const { toQueryParams } = useFilters();
   const [state, setState] = useState<OverviewState>({ status: "loading" });
+  const [metric, setMetric] = useState<Metric>("revenue");
 
   const fetchData = useCallback(async () => {
     setState({ status: "loading" });
@@ -39,6 +130,54 @@ export default function OverviewPage() {
     fetchData();
   }, [fetchData]);
 
+  const productData =
+    state.status === "success"
+      ? metric === "gmv"
+        ? state.kpis.topProductsByGmv
+        : state.kpis.topProductsByRevenue
+      : [];
+
+  const productColumns: Column<ProductRankingEntry>[] = [
+    {
+      key: "rank",
+      label: "#",
+      align: "right",
+      render: (_item, index) => (
+        <span
+          style={{
+            fontWeight: "var(--font-weight-bold)",
+            color: index < 3 ? "var(--color-primary-400)" : "var(--color-text-muted)",
+          }}
+        >
+          {index + 1}
+        </span>
+      ),
+    },
+    {
+      key: "productCategory",
+      label: "Categoría",
+      render: (item) => CATEGORY_LABELS[item.productCategory] || item.productCategory || "Sin categoría",
+    },
+    {
+      key: "totalSold",
+      label: "Unidades Vendidas",
+      align: "right",
+      render: (item) => formatNumber(item.totalSold),
+    },
+    {
+      key: "gmv",
+      label: "GMV (BRL)",
+      align: "right",
+      render: (item) => formatCurrency(item.gmv),
+    },
+    {
+      key: "revenue",
+      label: "Revenue (BRL)",
+      align: "right",
+      render: (item) => formatCurrency(item.revenue),
+    },
+  ];
+
   return (
     <main className={styles.page}>
       <div className={styles.header}>
@@ -62,6 +201,52 @@ export default function OverviewPage() {
         <>
           <KpiGrid data={state.kpis} />
           <TrendChart data={state.trend} />
+
+          <Card title={`Top 10 Productos`}>
+            <div
+              style={{
+                display: "flex",
+                gap: "var(--spacing-xs)",
+                marginBottom: "var(--spacing-md)",
+              }}
+            >
+              <button
+                onClick={() => setMetric("revenue")}
+                style={{
+                  padding: "var(--spacing-xs) var(--spacing-md)",
+                  backgroundColor:
+                    metric === "revenue" ? "var(--color-primary-600)" : "var(--color-bg-tertiary)",
+                  color: "var(--color-text-primary)",
+                  border: "1px solid var(--color-border)",
+                  borderRadius: "var(--radius-md)",
+                  fontSize: "var(--font-size-sm)",
+                  cursor: "pointer",
+                }}
+              >
+                Revenue
+              </button>
+              <button
+                onClick={() => setMetric("gmv")}
+                style={{
+                  padding: "var(--spacing-xs) var(--spacing-md)",
+                  backgroundColor:
+                    metric === "gmv" ? "var(--color-primary-600)" : "var(--color-bg-tertiary)",
+                  color: "var(--color-text-primary)",
+                  border: "1px solid var(--color-border)",
+                  borderRadius: "var(--radius-md)",
+                  fontSize: "var(--font-size-sm)",
+                  cursor: "pointer",
+                }}
+              >
+                GMV
+              </button>
+            </div>
+            <Table
+              columns={productColumns}
+              data={productData}
+              emptyMessage="No hay productos para el período seleccionado"
+            />
+          </Card>
         </>
       )}
     </main>

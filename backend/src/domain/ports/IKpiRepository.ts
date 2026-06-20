@@ -18,10 +18,12 @@ export interface KpiFilters {
   from?: Date;
   /** Fecha de fin del período de análisis. */
   to?: Date;
-  /** Filtro por estado del cliente (ej. activo, inactivo). */
+  /** Filtro por estado del cliente (ej. SP, RJ). */
   customerState?: string;
-  /** Filtro por tipo de pago (ej. crédito, contado). */
-  paymentType?: string;
+  /** Filtro por estado de la orden (ej. delivered, canceled). */
+  orderStatus?: string;
+  /** Filtro por categoría del producto (inglés). */
+  category?: string;
 }
 
 /**
@@ -35,11 +37,13 @@ export interface TrendFilters extends KpiFilters {
 
 /**
  * Filtros extendidos para consultas de productos más vendidos.
- * Agrega un límite opcional de resultados sobre los filtros base.
+ * Agrega un límite opcional de resultados y una métrica de ordenamiento sobre los filtros base.
  */
 export interface TopProductFilters extends KpiFilters {
   /** Número máximo de productos a retornar en el ranking. */
   limit?: number;
+  /** Métrica usada para ordenar el ranking: GMV o ingresos. */
+  metric?: 'gmv' | 'revenue';
 }
 
 /**
@@ -64,7 +68,7 @@ export interface IKpiRepository {
 
   /**
    * Obtiene el ranking de productos más vendidos según los filtros aplicados.
-   * @param filters - Filtros que pueden incluir un límite de resultados.
+   * @param filters - Filtros que pueden incluir límite de resultados y métrica de ordenamiento.
    * @returns Promesa con un arreglo del ranking de productos.
    */
   getTopProducts(filters: TopProductFilters): Promise<ProductRanking[]>;

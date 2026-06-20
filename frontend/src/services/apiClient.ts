@@ -55,7 +55,8 @@ function buildFilterParams(filters: FilterParams): Record<string, string | undef
     from: filters.from,
     to: filters.to,
     customer_state: filters.customer_state,
-    payment_type: filters.payment_type,
+    order_status: filters.order_status,
+    category: filters.category,
   };
 }
 
@@ -71,8 +72,14 @@ export const apiClient = {
     });
   },
 
-  getTopProducts(filters: FilterParams = {}): Promise<ProductRankingResponse> {
-    return request<ProductRankingResponse>("/top-products", buildFilterParams(filters));
+  getTopProducts(
+    filters: FilterParams & { metric?: "gmv" | "revenue"; limit?: number } = {},
+  ): Promise<ProductRankingResponse> {
+    return request<ProductRankingResponse>("/rankings/products", {
+      ...buildFilterParams(filters),
+      metric: filters.metric,
+      limit: filters.limit !== undefined ? String(filters.limit) : undefined,
+    });
   },
 };
 
