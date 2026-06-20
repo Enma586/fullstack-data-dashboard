@@ -208,40 +208,16 @@ export default function OverviewPage() {
           <TrendChart data={state.trend} />
 
           <Card title={`Top 10 Productos`}>
-            <div
-              style={{
-                display: "flex",
-                gap: "var(--spacing-xs)",
-                marginBottom: "var(--spacing-md)",
-              }}
-            >
+            <div className={styles.toggleBar}>
               <button
                 onClick={() => setMetric("revenue")}
-                style={{
-                  padding: "var(--spacing-xs) var(--spacing-md)",
-                  backgroundColor:
-                    metric === "revenue" ? "var(--color-primary-600)" : "var(--color-bg-tertiary)",
-                  color: "var(--color-text-primary)",
-                  border: "1px solid var(--color-border)",
-                  borderRadius: "var(--radius-md)",
-                  fontSize: "var(--font-size-sm)",
-                  cursor: "pointer",
-                }}
+                className={`${styles.toggleBtn} ${metric === "revenue" ? styles.toggleBtnActive : styles.toggleBtnInactive}`}
               >
                 Revenue
               </button>
               <button
                 onClick={() => setMetric("gmv")}
-                style={{
-                  padding: "var(--spacing-xs) var(--spacing-md)",
-                  backgroundColor:
-                    metric === "gmv" ? "var(--color-primary-600)" : "var(--color-bg-tertiary)",
-                  color: "var(--color-text-primary)",
-                  border: "1px solid var(--color-border)",
-                  borderRadius: "var(--radius-md)",
-                  fontSize: "var(--font-size-sm)",
-                  cursor: "pointer",
-                }}
+                className={`${styles.toggleBtn} ${metric === "gmv" ? styles.toggleBtnActive : styles.toggleBtnInactive}`}
               >
                 GMV
               </button>

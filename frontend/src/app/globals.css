@@ -1,102 +1,84 @@
-/* =============================================================================
-   globals.css — Sistema de diseño Olist Dashboard
-   Paleta oscuro/morado/verde mediante CSS Custom Properties
-   ============================================================================= */
-
 :root {
-  /* ── Fondo y superficie ─────────────────────────────────────────────── */
-  --color-bg-primary: #0d0f14;
-  --color-bg-secondary: #141822;
-  --color-bg-tertiary: #1c2230;
-  --color-bg-elevated: #232b3d;
+  --color-bg-primary: #080b14;
+  --color-bg-secondary: #0f1320;
+  --color-bg-tertiary: #181e30;
+  --color-bg-elevated: #1f2740;
+  --color-bg-glass: rgba(15, 19, 32, 0.75);
 
-  /* ── Texto ───────────────────────────────────────────────────────────── */
-  --color-text-primary: #f0f2f5;
-  --color-text-secondary: #a0a8b8;
-  --color-text-muted: #6b7385;
-  --color-text-inverse: #0d0f14;
+  --color-text-primary: #edf0f7;
+  --color-text-secondary: #94a0b8;
+  --color-text-muted: #5a647a;
 
-  /* ── Primario (morado) ───────────────────────────────────────────────── */
-  --color-primary-50: #f3e8ff;
-  --color-primary-100: #e0cfff;
-  --color-primary-200: #c4a0ff;
-  --color-primary-300: #a570ff;
-  --color-primary-400: #8b40ff;
-  --color-primary-500: #7c3aed;
-  --color-primary-600: #6d28d9;
-  --color-primary-700: #5b21b6;
-  --color-primary-800: #4c1d95;
-  --color-primary-900: #3b1278;
+  --color-primary-50: #f0e6ff;
+  --color-primary-100: #d4bfff;
+  --color-primary-200: #b894ff;
+  --color-primary-300: #9c6aff;
+  --color-primary-400: #8040ff;
+  --color-primary-500: #6d28d9;
+  --color-primary-600: #5b21b6;
+  --color-primary-700: #4c1d95;
+  --color-primary-800: #3b1278;
+  --color-primary-900: #2a0a5c;
 
-  /* ── Secundario / Acento positivo (verde menta) ──────────────────────── */
   --color-secondary-50: #ecfdf5;
-  --color-secondary-100: #d1fae5;
-  --color-secondary-200: #a7f3d0;
-  --color-secondary-300: #6ee7b7;
-  --color-secondary-400: #34d399;
-  --color-secondary-500: #10b981;
-  --color-secondary-600: #059669;
-  --color-secondary-700: #047857;
-  --color-secondary-800: #065f46;
-  --color-secondary-900: #064e3b;
+  --color-secondary-100: #b8f5d8;
+  --color-secondary-200: #7debaa;
+  --color-secondary-300: #4ade80;
+  --color-secondary-400: #22c55e;
+  --color-secondary-500: #16a34a;
+  --color-secondary-600: #15803d;
+  --color-secondary-700: #166534;
+  --color-secondary-800: #14532d;
+  --color-secondary-900: #0f3d21;
 
-  /* ── Semántico ───────────────────────────────────────────────────────── */
-  --color-success: var(--color-secondary-500);
+  --color-success: var(--color-secondary-400);
   --color-warning: #f59e0b;
   --color-error: #ef4444;
-  --color-info: #3b82f6;
+  --color-info: #6366f1;
 
-  /* ── Bordes ──────────────────────────────────────────────────────────── */
-  --color-border: rgba(255, 255, 255, 0.08);
-  --color-border-hover: rgba(255, 255, 255, 0.16);
-  --color-border-focus: var(--color-primary-500);
+  --color-border: rgba(108, 122, 160, 0.12);
+  --color-border-hover: rgba(108, 122, 160, 0.25);
+  --color-border-focus: var(--color-primary-400);
 
-  /* ── Sombras ─────────────────────────────────────────────────────────── */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 20px rgba(128, 64, 255, 0.15);
 
-  /* ── Tipografía ──────────────────────────────────────────────────────── */
-  --font-family-base: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, Oxygen, Ubuntu, sans-serif;
+  --font-family-base: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-family-mono: "JetBrains Mono", "Fira Code", "Consolas", monospace;
 
-  --font-size-xs: 0.75rem;
-  --font-size-sm: 0.875rem;
-  --font-size-base: 1rem;
-  --font-size-lg: 1.125rem;
+  --font-size-xs: 0.7rem;
+  --font-size-sm: 0.825rem;
+  --font-size-base: 0.9375rem;
+  --font-size-lg: 1.0625rem;
   --font-size-xl: 1.25rem;
   --font-size-2xl: 1.5rem;
-  --font-size-3xl: 1.875rem;
+  --font-size-3xl: 2rem;
 
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
 
-  /* ── Espaciado ───────────────────────────────────────────────────────── */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
-  --spacing-2xl: 3rem;
+  --spacing-md: 0.75rem;
+  --spacing-lg: 1.25rem;
+  --spacing-xl: 1.75rem;
+  --spacing-2xl: 2.5rem;
   --spacing-3xl: 4rem;
 
-  /* ── Radios ──────────────────────────────────────────────────────────── */
-  --radius-sm: 0.25rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.875rem;
+  --radius-xl: 1.125rem;
   --radius-full: 9999px;
 
-  /* ── Transiciones ────────────────────────────────────────────────────── */
-  --transition-fast: 150ms ease;
-  --transition-base: 250ms ease;
-  --transition-slow: 400ms ease;
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
 }
-
-/* ── Reset y base ────────────────────────────────────────────────────── */
 
 *,
 *::before,
@@ -118,7 +100,8 @@ body {
   font-weight: var(--font-weight-normal);
   line-height: 1.6;
   color: var(--color-text-primary);
-  background-color: var(--color-bg-primary);
+  background: linear-gradient(135deg, #080b14 0%, #0a1020 30%, #0d1225 60%, #0f1428 100%);
+  background-attachment: fixed;
   min-height: 100vh;
 }
 
@@ -144,11 +127,9 @@ img {
   display: block;
 }
 
-/* ── Scrollbar personalizada ─────────────────────────────────────────── */
-
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {

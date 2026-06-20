@@ -1,31 +1,69 @@
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: var(--spacing-md);
   margin-bottom: var(--spacing-xl);
+}
+
+.kpiCard {
+  position: relative;
+  overflow: hidden;
+}
+
+.kpiCard::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+.kpiPositive::after {
+  background: linear-gradient(90deg, var(--color-secondary-400), var(--color-secondary-300));
+}
+
+.kpiNegative::after {
+  background: linear-gradient(90deg, var(--color-error), #f87171);
+}
+
+.kpiNeutral::after {
+  background: linear-gradient(90deg, var(--color-primary-400), var(--color-primary-300));
 }
 
 .kpiValue {
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-bold);
-  color: var(--color-text-primary);
-  line-height: 1.2;
+  line-height: 1.1;
+  position: relative;
+  z-index: 1;
 }
 
-.kpiSubtext {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-muted);
-  margin-top: var(--spacing-xs);
+.kpiPositive .kpiValue {
+  color: var(--color-secondary-300);
 }
 
-.kpiPositive {
-  color: var(--color-secondary-400);
-}
-
-.kpiNegative {
+.kpiNegative .kpiValue {
   color: var(--color-error);
 }
 
-.kpiNeutral {
-  color: var(--color-primary-400);
+.kpiNeutral .kpiValue {
+  color: var(--color-primary-300);
+}
+
+.kpiLabel {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  margin-top: var(--spacing-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: var(--font-weight-medium);
+}
+
+.kpiSubtext {
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+  opacity: 0.7;
 }

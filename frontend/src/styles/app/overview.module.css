@@ -1,24 +1,74 @@
 .page {
-  max-width: 1280px;
+  max-width: 1320px;
   margin: 0 auto;
-  padding: var(--spacing-xl) var(--spacing-lg);
+  padding: var(--spacing-2xl) var(--spacing-lg);
 }
 
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: var(--spacing-2xl);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border);
+  position: relative;
+}
+
+.header::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 80px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-primary-500), transparent);
+  border-radius: var(--radius-full);
 }
 
 .title {
-  font-size: var(--font-size-2xl);
+  font-size: var(--font-size-3xl);
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
+  letter-spacing: -0.02em;
 }
 
 .subtitle {
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);
   margin-top: var(--spacing-xs);
+}
+
+.toggleBar {
+  display: flex;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-md);
+}
+
+.toggleBtn {
+  padding: var(--spacing-xs) var(--spacing-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-weight: var(--font-weight-medium);
+}
+
+.toggleBtnActive {
+  background: linear-gradient(135deg, var(--color-primary-600) 0%, var(--color-primary-700) 100%);
+  color: var(--color-text-primary);
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 12px rgba(128, 64, 255, 0.2);
+}
+
+.toggleBtnInactive {
+  background: linear-gradient(135deg, rgba(24, 30, 48, 0.8) 0%, rgba(31, 39, 64, 0.5) 100%);
+  color: var(--color-text-secondary);
+  backdrop-filter: blur(8px);
+}
+
+.toggleBtnInactive:hover {
+  background: linear-gradient(135deg, rgba(24, 30, 48, 0.9) 0%, rgba(31, 39, 64, 0.6) 100%);
+  border-color: var(--color-border-hover);
+  color: var(--color-text-primary);
 }

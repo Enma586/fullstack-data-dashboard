@@ -2,6 +2,8 @@
   overflow-x: auto;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, rgba(15, 19, 32, 0.6) 0%, rgba(24, 30, 48, 0.4) 100%);
+  backdrop-filter: blur(8px);
 }
 
 .table {
@@ -11,17 +13,17 @@
 }
 
 .headerRow {
-  background-color: var(--color-bg-tertiary);
+  background: linear-gradient(135deg, rgba(128, 64, 255, 0.08) 0%, rgba(99, 102, 241, 0.04) 100%);
 }
 
 .headerCell {
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-md);
   text-align: left;
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-secondary);
   font-size: var(--font-size-xs);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   border-bottom: 1px solid var(--color-border);
   white-space: nowrap;
   user-select: none;
@@ -40,28 +42,29 @@
   margin-left: var(--spacing-xs);
   display: inline-block;
   color: var(--color-text-muted);
+  font-size: 0.55rem;
 }
 
 .sortIconActive {
-  color: var(--color-primary-500);
+  color: var(--color-primary-400);
 }
 
 .bodyRow {
-  transition: background-color var(--transition-fast);
+  transition: background var(--transition-fast);
 }
 
 .bodyRow:nth-child(even) {
-  background-color: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .bodyRow:hover {
-  background-color: var(--color-bg-elevated);
+  background: linear-gradient(90deg, rgba(128, 64, 255, 0.06) 0%, transparent 80%);
 }
 
 .bodyCell {
   padding: var(--spacing-sm) var(--spacing-md);
   color: var(--color-text-primary);
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid rgba(108, 122, 160, 0.06);
   white-space: nowrap;
 }
 
