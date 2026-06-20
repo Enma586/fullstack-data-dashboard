@@ -8,6 +8,7 @@
 node_modules/
 dist/
 coverage/
+.next/
 
 # -----------------------------------------------------------------------------
 # Archivos de configuración local y secretos

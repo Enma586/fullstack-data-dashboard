@@ -53,6 +53,8 @@ export class KpiSummary {
    * @param averageOrderValue - Valor promedio de los pedidos.
    * @param cancelledOrders - Cantidad de pedidos cancelados.
    * @param cancellationRate - Tasa de cancelación (proporción sobre el total).
+   * @param totalItems - Cantidad total de ítems vendidos.
+   * @param onTimeRate - Proporción de pedidos entregados a tiempo (0-1).
    * @param ordersByState - Desglose de pedidos agrupados por estado.
    * @param ordersByPaymentType - Desglose de pedidos agrupados por tipo de pago.
    * @param topCategories - Ranking de categorías más vendidas.
@@ -63,6 +65,8 @@ export class KpiSummary {
     public readonly averageOrderValue: number,
     public readonly cancelledOrders: number,
     public readonly cancellationRate: number,
+    public readonly totalItems: number,
+    public readonly onTimeRate: number,
     public readonly ordersByState: StateOrderSummary[],
     public readonly ordersByPaymentType: PaymentTypeSummary[],
     public readonly topCategories: CategorySummary[],

@@ -91,12 +91,26 @@ export class PrismaKpiRepository implements IKpiRepository {
       total_revenue: string;
       total_orders: bigint;
       cancelled_orders: bigint;
+      total_items: bigint;
+      on_time_orders: bigint;
+      delivered_orders: bigint;
     }> = await prisma.$queryRawUnsafe(
       `
       SELECT
         COALESCE(SUM(fs.payment_value_allocated), 0) AS total_revenue,
         COUNT(DISTINCT fs.order_id) AS total_orders,
-        COUNT(DISTINCT CASE WHEN fs.order_status = 'canceled' THEN fs.order_id END) AS cancelled_orders
+        COUNT(DISTINCT CASE WHEN fs.order_status = 'canceled' THEN fs.order_id END) AS cancelled_orders,
+        COUNT(*) AS total_items,
+        COUNT(DISTINCT CASE
+          WHEN fs.order_delivered_customer_date IS NOT NULL
+           AND fs.order_estimated_delivery_date IS NOT NULL
+           AND fs.order_delivered_customer_date <= fs.order_estimated_delivery_date
+          THEN fs.order_id
+        END) AS on_time_orders,
+        COUNT(DISTINCT CASE
+          WHEN fs.order_delivered_customer_date IS NOT NULL
+          THEN fs.order_id
+        END) AS delivered_orders
       FROM gold.fact_sales fs
       ${wj.sql}
     `,
@@ -106,9 +120,14 @@ export class PrismaKpiRepository implements IKpiRepository {
     const totalRevenue = Number(mainRow[0].total_revenue);
     const totalOrders = Number(mainRow[0].total_orders);
     const cancelledOrders = Number(mainRow[0].cancelled_orders);
+    const totalItems = Number(mainRow[0].total_items);
     const averageOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
     const cancellationRate =
       totalOrders > 0 ? cancelledOrders / totalOrders : 0;
+    const deliveredOrders = Number(mainRow[0].delivered_orders);
+    const onTimeOrders = Number(mainRow[0].on_time_orders);
+    const onTimeRate =
+      deliveredOrders > 0 ? onTimeOrders / deliveredOrders : 0;
 
     const byState: Array<{ state: string; order_count: bigint }> =
       await prisma.$queryRawUnsafe(

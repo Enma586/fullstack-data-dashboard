@@ -73,8 +73,8 @@ CREATE TABLE clean.products AS
 SELECT
     product_id,
     NULLIF(product_category_name, '')       AS product_category_name,
-    NULLIF(product_name_length, '')::INT    AS product_name_length,
-    NULLIF(product_description_length, '')::INT AS product_description_length,
+    NULLIF(product_name_lenght, '')::INT    AS product_name_length,
+    NULLIF(product_description_lenght, '')::INT AS product_description_length,
     NULLIF(product_photos_qty, '')::INT     AS product_photos_qty,
     NULLIF(product_weight_g, '')::NUMERIC   AS product_weight_g,
     NULLIF(product_length_cm, '')::NUMERIC  AS product_length_cm,

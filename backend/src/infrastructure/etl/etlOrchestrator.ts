@@ -44,6 +44,7 @@ function parseCSV(filePath: string): Record<string, string>[] {
   return parse(content, {
     columns: true,
     skip_empty_lines: true,
+    bom: true,
     relax_column_count: true,
   });
 }
