@@ -225,7 +225,7 @@ Se crea una tabla espejo en el schema `clean` aplicando:
 | 3 esquemas (raw/clean/gold) | 2 esquemas o tablas planas | Separacion clara de responsabilidades: raw = snapshot inmutable, clean = validado, gold = modelado para consumo. Mas complejidad de mantenimiento pero trazabilidad total. |
 | Asignacion proporcional de payment | Repetir payment total en cada item | La repeticion inflaria revenue al sumar. La asignacion proporcional es la unica forma correcta de mantener el grano item sin distorsionar agregaciones. |
 | SVG nativo vs chart library | Chart.js, Recharts, D3 | Ninguna libreria externa; SVG `<polyline>` a mano. Menos peso de bundle, control total, pero mas trabajo para graficos complejos. |
-| Sin TanStack Query | React Query, SWR | Proyecto pequeno con 3 endpoints; `useEffect` + `useCallback` es suficiente. Para mas endpoints o cache agresivo, valdria la pena migrar. |
+| Sin TanStack Query | React Query, SWR | Proyecto pequeño con 3 endpoints; `useEffect` + `useCallback` es suficiente. Para mas endpoints o cache agresivo, valdria la pena migrar. |
 | Prisma solo en gold | Prisma en los 3 esquemas | raw y clean se usan solo en ETL con SQL plano; no necesitan tipos. Prisma en gold da type-safety en las queries de la API. |
 | Hexagonal Architecture | Arquitectura plana (controllers → db) | Separar puertos de infraestructura permite testear casos de uso sin base de datos real. Overhead de abstracciones justificado por testabilidad. |
 | csv-parse en Node | COPY en SQL puro | `COPY` es mas rapido pero requiere acceso a disco del servidor. csv-parse permite procesamiento en el contenedor sin depender de rutas de archivo en Postgres. |
