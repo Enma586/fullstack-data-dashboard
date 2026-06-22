@@ -1,6 +1,6 @@
 # Olist Dashboard - Fullstack Analytics
 
-Dashboard analitico para el dataset publico de Olist (e-commerce brasileno). Construido con Next.js 15 (App Router), Express 4, PostgreSQL 16 y Prisma 5.
+Dashboard analitico para el dataset publico de Olist (e-commerce brasileño). Construido con Next.js 15 (App Router), Express 4, PostgreSQL 16 y Prisma 5.
 
 ---
 
