@@ -104,7 +104,7 @@ export function GlobalFilters() {
 
       <div className={styles.filterItem}>
         <Select
-          label="Status de Orden"
+          label="Estado de Orden"
           options={ORDER_STATUS_OPTIONS}
           value={filters.orderStatus}
           onChange={setOrderStatus}
