@@ -1,3 +1,11 @@
+/**
+ * Implementacion del repositorio de KPIs usando Prisma con SQL plano.
+ *
+ * Todas las consultas se ejecutan contra el esquema gold (fact_sales + dimensiones)
+ * usando $queryRawUnsafe con parametros posicionales ($1, $2...) para evitar
+ * inyeccion SQL. Ninguna consulta accede a los esquemas raw o clean.
+ */
+
 import { prisma } from '../database/prismaClient';
 import {
   IKpiRepository,
@@ -9,9 +17,14 @@ import { KpiSummary } from '../../domain/entities/KpiSummary';
 import { RevenueTrend } from '../../domain/entities/RevenueTrend';
 import { ProductRanking } from '../../domain/entities/ProductRanking';
 
+/** Tipos permitidos como valores de parametros SQL. */
 type RawScalar = string | number | boolean | Date;
 
 export class PrismaKpiRepository implements IKpiRepository {
+  /**
+   * Construye la clausula FROM con los JOINs necesarios para las consultas.
+   * Todas las queries parten de gold.fact_sales como driving table.
+   */
   private joinedFrom(): string {
     return [
       'FROM gold.fact_sales fs',
@@ -20,6 +33,10 @@ export class PrismaKpiRepository implements IKpiRepository {
     ].join(' ');
   }
 
+  /**
+   * Construye la clausula WHERE con parametros posicionales y devuelve los valores.
+   * Los indices de parametros ($1, $2...) se incrementan secuencialmente.
+   */
   private whereConditions(
     filters: KpiFilters,
   ): { clause: string; params: RawScalar[] } {
@@ -59,6 +76,7 @@ export class PrismaKpiRepository implements IKpiRepository {
     };
   }
 
+  /** Combina FROM+JOINs con la clausula WHERE filtrada. */
   private whereAndJoin(
     filters: KpiFilters,
   ): { clause: string; params: RawScalar[] } {
@@ -67,6 +85,7 @@ export class PrismaKpiRepository implements IKpiRepository {
     return { clause: `${from} ${w.clause}`, params: w.params };
   }
 
+  /** Obtiene el resumen de KPIs agregados (GMV, Revenue, Orders, etc.). */
   async getKpis(filters: KpiFilters): Promise<KpiSummary> {
     const wj = this.whereAndJoin(filters);
 
@@ -208,6 +227,7 @@ export class PrismaKpiRepository implements IKpiRepository {
     );
   }
 
+  /** Obtiene la serie temporal de revenue agregado por dia o semana. */
   async getRevenueTrend(filters: TrendFilters): Promise<RevenueTrend[]> {
     const wj = this.whereAndJoin(filters);
     const trunc = filters.grain === 'week' ? 'week' : 'day';
@@ -239,6 +259,7 @@ export class PrismaKpiRepository implements IKpiRepository {
     );
   }
 
+  /** Obtiene el ranking de productos ordenado por GMV o Revenue segun `metric`. */
   async getTopProducts(filters: TopProductFilters): Promise<ProductRanking[]> {
     const wj = this.whereAndJoin(filters);
     const limit = filters.limit ?? 10;
