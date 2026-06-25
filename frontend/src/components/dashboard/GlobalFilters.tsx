@@ -108,7 +108,7 @@ export function GlobalFilters() {
           options={ORDER_STATUS_OPTIONS}
           value={filters.orderStatus}
           onChange={setOrderStatus}
-          placeholder="Todos los status"
+          placeholder="Todos los estados"
         />
       </div>
 
