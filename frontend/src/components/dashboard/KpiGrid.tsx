@@ -37,7 +37,7 @@ const VARIANT_CLASS: Record<string, string> = {
 export function KpiGrid({ data }: KpiGridProps) {
   const cards: KpiCardConfig[] = [
     { label: "GMV", value: formatCurrency(data.gmv), subtext: "Volumen bruto", variant: "positive" },
-    { label: "Revenue", value: formatCurrency(data.revenue), subtext: "Ingreso total", variant: "positive" },
+    { label: "Ganancias", value: formatCurrency(data.revenue), subtext: "Ingreso total", variant: "positive" },
     { label: "Pedidos", value: formatNumber(data.totalOrders), subtext: "Total de pedidos", variant: "neutral" },
     { label: "AOV", value: formatCurrency(data.averageOrderValue), subtext: "Valor promedio", variant: "positive" },
     { label: "IPO", value: data.itemsPerOrder.toFixed(2), subtext: "Ítems por pedido", variant: "neutral" },

@@ -102,7 +102,7 @@ export default function OverviewPage() {
     },
     {
       key: "revenue",
-      label: "Revenue (BRL)",
+      label: "Ganancias (BRL)",
       align: "right",
       render: (item) => formatCurrency(item.revenue),
     },
@@ -138,7 +138,7 @@ export default function OverviewPage() {
                 onClick={() => setMetric("revenue")}
                 className={`${styles.toggleBtn} ${metric === "revenue" ? styles.toggleBtnActive : styles.toggleBtnInactive}`}
               >
-                Revenue
+                Ganancias
               </button>
               <button
                 onClick={() => setMetric("gmv")}
