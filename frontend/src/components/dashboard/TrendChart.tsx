@@ -106,7 +106,7 @@ export function TrendChart({ data }: TrendChartProps) {
   const ttipY = tooltip ? Math.max(tooltip.y - 36, 4) : 0;
 
   return (
-    <Card title="Tendencia (Revenue y Pedidos)">
+    <Card title="Tendencia (Ganancias y Pedidos)">
       <div className={styles.wrapper}>
         <svg viewBox={`0 0 ${cw} ${ch}`} className={styles.svg}
           onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}
@@ -180,7 +180,7 @@ export function TrendChart({ data }: TrendChartProps) {
         <div className={styles.legend}>
           <div className={styles.legendItem}>
             <span className={styles.legendDot} style={{ background: "#a855f7", boxShadow: "0 0 8px #a855f7" }} />
-            Revenue
+            Ganancias
           </div>
           <div className={styles.legendItem}>
             <span className={styles.legendDot} style={{ background: "#22d65e", boxShadow: "0 0 8px #22d65e" }} />
