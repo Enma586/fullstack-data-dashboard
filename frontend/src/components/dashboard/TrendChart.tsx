@@ -168,7 +168,7 @@ export function TrendChart({ data }: TrendChartProps) {
                 {tooltip.item.period}
               </text>
               <text x={ttipX + 12} y={ttipY + 30} fill="#a855f7" fontSize={11}>
-                Revenue: {formatCurrency(tooltip.item.revenue)}
+                Ganancias: {formatCurrency(tooltip.item.revenue)}
               </text>
               <text x={ttipX + 12} y={ttipY + 42} fill="#22d65e" fontSize={11}>
                 Pedidos: {formatNumber(tooltip.item.orderCount)}
