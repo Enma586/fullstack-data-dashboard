@@ -42,7 +42,7 @@ export function KpiGrid({ data }: KpiGridProps) {
     { label: "AOV", value: formatCurrency(data.averageOrderValue), subtext: "Valor promedio", variant: "positive" },
     { label: "IPO", value: data.itemsPerOrder.toFixed(2), subtext: "Ítems por pedido", variant: "neutral" },
     { label: "Cancelación", value: formatPercent(data.cancellationRate), subtext: "Tasa de cancelación", variant: "negative" },
-    { label: "On-Time", value: formatPercent(data.onTimeRate), subtext: "Entregas a tiempo", variant: "positive" },
+    { label: "En Tiempo", value: formatPercent(data.onTimeRate), subtext: "Entregas a tiempo", variant: "positive" },
   ];
 
   return (
