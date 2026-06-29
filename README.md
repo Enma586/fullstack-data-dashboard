@@ -46,7 +46,7 @@ npm test               # tests unitarios + integracion
 ```bash
 cd frontend
 npm install
-NEXT_PUBLIC_API_URL=http://localhost:3000 npm run dev  # :5173
+API_UPSTREAM=http://localhost:3000 npm run dev  # :5173, proxy API via Next.js rewrites
 npm run build
 npm run lint
 ```
@@ -68,10 +68,10 @@ Todos los endpoints aceptan query params: `from`, `to`, `customer_state`, `order
 
 ```
 +------------------+       +-------------------+       +------------------+
-|                  |       |                   |       |                  |
-|   Frontend       | HTTP  |   Backend         | SQL   |   PostgreSQL     |
-|   Next.js 15     +------>+   Express 4       +------>+   raw / clean    |
-|   React 19       |       |   Hexagonal Arch  |       |   / gold         |
+|                  |  proxy|                   | SQL   |                  |
+|   Frontend       | rewri |   Backend         +------>+   PostgreSQL     |
+|   Next.js 15     +------>+   Express 4       |       |   raw / clean    |
+|   React 19       |  tes  |   Hexagonal Arch  |       |   / gold         |
 |   CSS Modules    |       |   Prisma 5        |       |   (3 esquemas)   |
 |   SVG nativo     |       |   csv-parse       |       |                  |
 +------------------+       +-------------------+       +------------------+
@@ -83,6 +83,8 @@ Todos los endpoints aceptan query params: `from`, `to`, `customer_state`, `order
                             |   4 pasos secuenc.|
                             +-------------------+
 ```
+
+> Las peticiones HTTP del navegador al frontend (`/kpis`, `/trend/revenue`, `/rankings/products`) son redirigidas al backend mediante **Next.js rewrites**, evitando problemas de CORS y resolucion de hostnames (`backend` solo es valido dentro de la red Docker).
 
 ### Flujo ETL
 

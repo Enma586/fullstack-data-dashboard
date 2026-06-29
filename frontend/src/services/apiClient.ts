@@ -1,7 +1,7 @@
 /**
  * apiClient — Cliente HTTP tipado para la API REST del backend.
- * Proporciona métodos para obtener KPIs, tendencias y rankings.
- * Usa NEXT_PUBLIC_API_URL como base URL (default http://localhost:3000).
+ * Usa rutas relativas; el servidor Next.js las redirige al backend
+ * mediante rewrites configurados en next.config.mjs.
  * Lanza ApiClientError con el mensaje del servidor en errores HTTP.
  */
 
@@ -14,8 +14,6 @@ import type {
   ApiErrorResponse,
 } from "@/types";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-
 class ApiClientError extends Error {
   constructor(
     public status: number,
@@ -27,17 +25,20 @@ class ApiClientError extends Error {
 }
 
 async function request<T>(path: string, params?: Record<string, string | undefined>): Promise<T> {
-  const url = new URL(path, BASE_URL);
+  let url = path;
 
   if (params) {
+    const searchParams = new URLSearchParams();
     Object.entries(params).forEach(([key, value]) => {
       if (value !== undefined && value !== "") {
-        url.searchParams.set(key, value);
+        searchParams.set(key, value);
       }
     });
+    const qs = searchParams.toString();
+    if (qs) url += `?${qs}`;
   }
 
-  const res = await fetch(url.toString());
+  const res = await fetch(url);
 
   if (!res.ok) {
     let message = `HTTP ${res.status}`;
